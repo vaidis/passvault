@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --colors --runInBand --silent false --verbose=false",
+    "test:debug": "node --inspect node_modules/.bin/jest --runInBand",
     "dev": "nodemon --watch './' --ext ts --exec 'ts-node' index.ts"
   },
   "keywords": [],
@@ -11,7 +12,10 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "bcrypt": "^5.1.1",
     "body-parser": "^2.2.0",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "express": "^4.21.2",
     "express-rate-limit": "^7.5.0",
@@ -21,6 +25,7 @@
     "nedb-promises": "^6.2.3"
   },
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.8",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.1",
     "@types/jest": "^29.5.14",

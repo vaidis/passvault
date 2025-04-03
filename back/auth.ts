@@ -1,30 +1,20 @@
 import express from 'express';
 import { Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
 import { JwtPayload } from 'jsonwebtoken';
 import Datastore from 'nedb-promises';
 import path from 'path';
-
+import { generateAccessToken, generateRefreshToken, verifyAccessToken, verifyRefreshToken} from './jwtTokens';
+import { log } from "console";
+import bcrypt from "bcrypt";
 
 interface User {
   _id?: string;
   username: string;
-  password?: string;
+  password: string;
   role: string;
 }
 
 const authRouter = express.Router();
-
-const ACCESS_TOKEN_SECRET = 'your_super_secret_access_key';
-const REFRESH_TOKEN_SECRET = 'your_super_secret_refresh_key';
-
-function generateAccessToken(payload: object) {
-  return jwt.sign(payload, ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
-}
-
-function generateRefreshToken(payload: object) {
-  return jwt.sign(payload, REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
-}
 
 // Load the admin database
 const adminDbPath = path.join(__dirname, 'db', 'admin.db.json');
@@ -35,61 +25,111 @@ const adminDb = Datastore.create({ filename: adminDbPath, autoload: true });
   const existing = await adminDb.findOne({ username: 'admin' });
   if (!existing) {
     await adminDb.insert({ username: 'admin', password: 'admin123', role: 'admin' });
-    console.log('Default admin user created (admin / admin123)');
+    log('Default admin user created (admin / admin123)');
   }
 })();
 
+//
 // POST /auth/login
-authRouter.post('/login', async function loginHandler(req: Request, res: Response): Promise<void> {
-  const { username, password } = req.body;
-
+//
+authRouter.post('/login', async (req: Request, res: Response): Promise<void> => {
   try {
-    // find the user if any
-    const user: User | null = await adminDb.findOne({ username, password });
-    if (!user) {
+    const { username, password } = req.body;
+    log(' 🐞 auth.ts /login req.body:', req.body);
+    
+    // Basic validation
+    if (!username || !password) {
+      log(' 🐞 auth.ts /login 401 credentials required');
+      res.status(401).json({ message: 'Email and password are required.' });
+      return;
+    }
+
+    // check the user
+    // refactor the code and type declerations
+    const user: User | null = await adminDb.findOne({ username });
+    if (user == null) {
+      log(' 🐞 auth.ts /login 401 invalid credentials');
       res.status(401).json({ success: false, error: 'Invalid credentials' });
       return;
     }
 
-    // Optionally, generate and return a token here instead of raw role
-    const tokenPayload:User = {username:user.username, role:user.role}
-    const response = {
-      accessToken: generateAccessToken(tokenPayload),
-      refreshToken: generateRefreshToken(tokenPayload)
+    // check the password
+    if (password !== user.password) {
+      log(' 🐞 auth.ts /login 401 auth fail');
+      res.status(401).json({ error: 'Authentication failed' });
+      return;
     }
-    res.json(response);
+
+    // create tokens
+    const accessToken = generateAccessToken({ username: user.username, role: user.role });
+    const refreshToken = generateRefreshToken({ username: user.username, role: user.role });
+
+    // place tokens into secure cookies
+    res.cookie('accessToken', accessToken, {
+      httpOnly: true,
+      secure: true,            // Only over HTTPS
+      sameSite: 'strict',      // Prevent CSRF
+      maxAge: 15 * 60 * 1000,  // 15 minutes
+    });
+
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
+    res.json({ success: true, role: user.role });
 
   } catch (error) {
-    console.error('Login error:', error);
-                  res.status(500).json({ success: false, error: 'Internal server error' });
-                  return;
+    log('Login error:', error);
+    res.status(500).json({ success: false, error: 'Internal server error' });
+    return;
   }
 });
 
+
 // POST /auth/refresh
 authRouter.post('/refresh', async function refreshHandler(req: Request, res: Response): Promise<void> {
-  const { refreshToken } = req.body;
 
+  // check if there is a refreshToken cookie
+  const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) {
     res.status(401).json({ success: false, error: 'No refresh token provided' });
     return;
   }
 
   try {
-    const decoded = jwt.verify(refreshToken, REFRESH_TOKEN_SECRET);
-
+    // check if the refresh cookie cointains a valid refresh token
+    const decoded = verifyRefreshToken(refreshToken);
     if (typeof decoded !== 'object' || decoded === null || !('username' in decoded)) {
       res.status(403).json({ success: false, error: 'Invalid token payload' });
       return;
     }
-    const payload = decoded as JwtPayload;
-    //const payload:User = decoded;
-    const newAccessToken = generateAccessToken({ username: payload.username, role: payload.role });
 
-    res.json({
-      success: true,
-      accessToken: newAccessToken,
+    console.log(' 🐞 auth.ts /refresh decoded', decoded);
+
+    // create new access token with the old payload
+    const payload = decoded as JwtPayload;
+    const newAccessToken = generateAccessToken({ username: payload.username, role: payload.role });
+    const newRefreshToken = generateRefreshToken({ username: payload.username, role: payload.role });
+
+    // place tokens into secure cookies
+    res.cookie('accessToken', newAccessToken, {
+      httpOnly: true,
+      secure: true,            // Only over HTTPS
+      sameSite: 'strict',      // Prevent CSRF
+      maxAge: 15 * 60 * 1000,  // 15 minutes
     });
+
+    res.cookie('refreshToken', newRefreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
+    res.json({ success: true, role: payload.role });
   } catch (err) {
     res.status(403).json({ success: false, error: 'Invalid or expired refresh token' });
     return;
@@ -99,18 +139,19 @@ authRouter.post('/refresh', async function refreshHandler(req: Request, res: Res
 
 // GET /auth/user
 authRouter.get('/user', async function loginHandler(req: Request, res: Response): Promise<void> {
-  const authHeader = req.headers['authorization'];
-  const accessToken = authHeader && authHeader.split(' ')[1];
+  const accessToken = req.cookies.accessToken;
+  log('AUTH accessToken', accessToken);
 
-  if (accessToken == null) {
+  if (!accessToken) {
     res.sendStatus(401);
+    return;
   }
 
-  if (accessToken) {
-    jwt.verify(accessToken, ACCESS_TOKEN_SECRET, (err: any, user: any) => {
-      if (err) return res.sendStatus(403);
-      res.json({success: true, role:user.role});
-    });
+  try {
+    const user = verifyAccessToken(accessToken);
+    res.json({ success: true, role: (user as any).role });
+  } catch (err) {
+    res.status(403).json({ error: 'No valid token' });
   }
 });
 
