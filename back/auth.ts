@@ -5,7 +5,6 @@ import Datastore from 'nedb-promises';
 import path from 'path';
 import { generateAccessToken, generateRefreshToken, verifyAccessToken, verifyRefreshToken} from './jwtTokens';
 import { log } from "console";
-import bcrypt from "bcrypt";
 
 interface User {
   _id?: string;
