@@ -3,40 +3,50 @@ import cors from 'cors';
 import helmet from 'helmet';
 import bodyParser from 'body-parser';
 import { rateLimit } from 'express-rate-limit'
-import path from 'path';
-import fs from 'fs';
 import cookieParser from 'cookie-parser';
 
-import { authRouter } from './auth';
-import { userManagerRouter } from './userManager';
+import { authRouter } from './routes/authRoutes';
+import { userRouter } from './routes/userRoutes';
 
-const PORT = 3001;
+const PORT = 3000;
 
 const limiter = rateLimit({
-	windowMs: 15 * 60 * 1000, // 15 minutes
+	windowMs: 15 * 60 * 1000, // 15 min
 	limit: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
 	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
 	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 })
 
 const app = express();
+
+// Middlewares
 app.use(cors());
 app.use(limiter)
 app.use(helmet());
 app.use(cookieParser());
 app.use(bodyParser.json());
 
-// Ensure user DB directory exists
-const usersDir = path.join(__dirname, 'db', 'users');
-fs.mkdirSync(usersDir, { recursive: true });
-
+// Routes
 app.use('/auth', authRouter);
-app.use('/users', userManagerRouter);
+app.use('/user', userRouter);
 
-if (require.main === module) {
-  app.listen(PORT, () => {
+// App
+app.listen(PORT, () => {
     console.log(`🚀 Server running at http://localhost:${PORT}`);
-  });
-}
-
+});
 export default app;
+
+
+
+
+
+
+//app.listen(PORT, () => {
+//  console.log(`🚀 Server running at http://localhost:${PORT}`);
+//});
+//if (require.main === module) {
+//  app.listen(PORT, () => {
+//    console.log(`🚀 Server running at http://localhost:${PORT}`);
+//  });
+//}
+

@@ -1,95 +1,65 @@
-import express from 'express';
 import { Request, Response } from 'express';
 import { JwtPayload } from 'jsonwebtoken';
-import Datastore from 'nedb-promises';
-import path from 'path';
-import { generateAccessToken, generateRefreshToken, verifyAccessToken, verifyRefreshToken} from './jwtTokens';
+import {
+  generateAccessToken,
+  generateRefreshToken,
+  verifyAccessToken,
+  verifyRefreshToken
+} from '../jwtTokens';
+import * as AuthService from '../services/authService';
 import { log } from "console";
 
-interface User {
-  _id?: string;
+interface LoginRequest {
   username: string;
   password: string;
-  role: string;
 }
-
-const authRouter = express.Router();
-
-// Load the admin database
-const adminDbPath = path.join(__dirname, 'db', 'admin.db.json');
-const adminDb = Datastore.create({ filename: adminDbPath, autoload: true });
-
-// Ensure an admin user exists (default: admin / admin123)
-(async () => {
-  const existing = await adminDb.findOne({ username: 'admin' });
-  if (!existing) {
-    await adminDb.insert({ username: 'admin', password: 'admin123', role: 'admin' });
-    log('Default admin user created (admin / admin123)');
-  }
-})();
 
 //
 // POST /auth/login
 //
-authRouter.post('/login', async (req: Request, res: Response): Promise<void> => {
+const login = async (req: Request, res: Response): Promise<void> => {
+  const { username, password }:LoginRequest = req.body;
   try {
-    const { username, password } = req.body;
-    log(' 🐞 auth.ts /login req.body:', req.body);
-    
     // Basic validation
     if (!username || !password) {
-      log(' 🐞 auth.ts /login 401 credentials required');
       res.status(401).json({ message: 'Email and password are required.' });
       return;
     }
 
-    // check the user
-    // refactor the code and type declerations
-    const user: User | null = await adminDb.findOne({ username });
-    if (user == null) {
-      log(' 🐞 auth.ts /login 401 invalid credentials');
-      res.status(401).json({ success: false, error: 'Invalid credentials' });
+    const result = await AuthService.authenticateUser(username, password);
+
+    if (!result.success) {
+      res.status(401).json({ error: result.error });
       return;
     }
-
-    // check the password
-    if (password !== user.password) {
-      log(' 🐞 auth.ts /login 401 auth fail');
-      res.status(401).json({ error: 'Authentication failed' });
-      return;
-    }
-
-    // create tokens
-    const accessToken = generateAccessToken({ username: user.username, role: user.role });
-    const refreshToken = generateRefreshToken({ username: user.username, role: user.role });
 
     // place tokens into secure cookies
-    res.cookie('accessToken', accessToken, {
+    res.cookie('accessToken', result.accessToken, {
       httpOnly: true,
-      secure: true,            // Only over HTTPS
+      secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',      // Prevent CSRF
       maxAge: 15 * 60 * 1000,  // 15 minutes
     });
 
-    res.cookie('refreshToken', refreshToken, {
+    res.cookie('refreshToken', result.refreshToken, {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
-    res.json({ success: true, role: user.role });
-
+    res.json({ success: true, message: `Hello ${result.user.username}`, role: result.user.role });
   } catch (error) {
     log('Login error:', error);
     res.status(500).json({ success: false, error: 'Internal server error' });
     return;
   }
-});
+};
 
-
-// POST /auth/refresh
-authRouter.post('/refresh', async function refreshHandler(req: Request, res: Response): Promise<void> {
+//
+// GET /auth/refresh
+//
+const refresh = async (req: Request, res: Response): Promise<void> => {
 
   // check if there is a refreshToken cookie
   const refreshToken = req.cookies.refreshToken;
@@ -105,8 +75,6 @@ authRouter.post('/refresh', async function refreshHandler(req: Request, res: Res
       res.status(403).json({ success: false, error: 'Invalid token payload' });
       return;
     }
-
-    console.log(' 🐞 auth.ts /refresh decoded', decoded);
 
     // create new access token with the old payload
     const payload = decoded as JwtPayload;
@@ -133,13 +101,13 @@ authRouter.post('/refresh', async function refreshHandler(req: Request, res: Res
     res.status(403).json({ success: false, error: 'Invalid or expired refresh token' });
     return;
   }
-});
+};
 
-
+//
 // GET /auth/user
-authRouter.get('/user', async function loginHandler(req: Request, res: Response): Promise<void> {
+//
+const user = async (req: Request, res: Response): Promise<void> => {
   const accessToken = req.cookies.accessToken;
-  log('AUTH accessToken', accessToken);
 
   if (!accessToken) {
     res.sendStatus(401);
@@ -147,12 +115,42 @@ authRouter.get('/user', async function loginHandler(req: Request, res: Response)
   }
 
   try {
-    const user = verifyAccessToken(accessToken);
-    res.json({ success: true, role: (user as any).role });
+    const decodedToken = verifyAccessToken(accessToken);
+
+    // Check if decodedToken is a string (error case) or a JwtPayload object
+    if (typeof decodedToken === 'string') {
+      res.status(401).json({ success: false, error: 'Invalid token format' });
+      return;
+    }
+
+    // Now TypeScript knows decodedToken is a JwtPayload
+    if (!decodedToken.username || !decodedToken.role) {
+      res.status(401).json({ success: false, error: 'Missing user information in token' });
+      return;
+    }
+
+    res.json({
+      success: true,
+      username: decodedToken.username,
+      role: decodedToken.role
+    });
   } catch (err) {
     res.status(403).json({ error: 'No valid token' });
   }
-});
+};
 
-export { authRouter };
+//
+// /auth/logout
+//
+const logout = async (req: Request, res: Response): Promise<void> => {
+  try {
+    res.clearCookie('accessToken');
+    res.clearCookie('refreshToken');
+    res.status(200).json({ success: true, message: 'Logged out successfully' });
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}
+
+export { login, refresh, user, logout };
 
