@@ -10,7 +10,7 @@ import {
 
 const router = express.Router();
 
-// All /user/:id routes require authentication
+// All routes require authentication
 router.use(isAuthenticated);
 
 // Public routes (just authenticated)

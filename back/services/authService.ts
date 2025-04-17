@@ -15,7 +15,7 @@ interface User {
   role: 'admin' | 'user';
 }
 
-interface UsersDb {
+interface Users {
   users: User[]
 }
 
@@ -66,17 +66,21 @@ export type UserInfoResult = UserInfoSuccess | UserInfoFailure;
 export async function authenticateUser(username: string, password: string): Promise<AuthResult> {
   try {
     // get the user
-    const usersDbPath = '/home/ste/Documents/Dev/passvault/back/db/users.db.json';
-    const adapter = new JSONFile<UsersDb>(usersDbPath);
-    const defaultData: UsersDb = { users: [] };
-    const usersDb = new Low<UsersDb>(adapter, defaultData);
-    await usersDb.read();
-    usersDb.data ||= { users: [] };
-    const user = usersDb.data.users.find((u: User) => u.username === username);
+    const dbPath = '/home/ste/Documents/Dev/passvault/back/db/users.db.json';
+    const defaultData: Users = { users: [] };
+    const adapter = new JSONFile<Users>(dbPath);
+    const db = new Low<Users>(adapter, defaultData);
+
+    //console.log(' 📮 authUser db 0', db)
+    await db.read();
+    //console.log(' 📮 authUser db 1', db)
+
+    db.data ||= { users: [] };
+    const user = db.data.users.find((u: User) => u.username === username);
 
     // Check if the user exists
     if (!user) {
-      return { success: false, error: 'User not found' };
+      return { success: false, error: 'user not found' };
     }
 
     // check the password

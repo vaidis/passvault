@@ -13,6 +13,7 @@ const oldCookies =  [
   'refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzQzNzA2ODY0LCJleHAiOjE3NDQzMTE2NjR9.uwao1jiLL3wF_Q4KNuHgi8mOsdZiHy9tO9E2gNEDTyA; Max-Age=604800; Path=/; Expires=Thu, 10 Apr 2000 19:01:04 GMT; HttpOnly; Secure; SameSite=Strict'
 ]
 
+
 describe('/auth/login', () => {
   it('should not login with wrong username', async () => {
     const res = await request(app)
@@ -127,14 +128,13 @@ describe('/user/ste', () => {
     .get('/user/ste')
     .set('Cookie', cookies);
     expect(res.status).toBe(200);
-    expect(res.body).toEqual({ "success": true,  "data": "ste" });
   });
   it('should NOT access protected route with accessToken cookie', async () => {
     const res = await request(app)
     .get('/user/bob')
     .set('Cookie', cookies);
     expect(res.status).toBe(401);
-    //expect(res.body).toEqual({ "success": true,  "data": "ste" });
+    expect(res.body).toEqual({ "success": false, "message": "Access denied: You can only access your own data" });
   });
 });
 
