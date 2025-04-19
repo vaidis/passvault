@@ -18,18 +18,27 @@ interface LoginRequest {
 // POST /auth/login
 //
 const login = async (req: Request, res: Response): Promise<void> => {
+  console.log('login req:', req.body);
   const { username, password }:LoginRequest = req.body;
   try {
     // Basic validation
     if (!username || !password) {
-      res.status(401).json({ message: 'Email and password are required.' });
+      console.log('🐞 authController.ts > login(): user & pass are required');
+      res.status(401).json({ 
+        success: false,
+        message: 'Email and password are required.',
+      });
       return;
     }
 
     const result = await AuthService.authenticateUser(username, password);
 
     if (!result.success) {
-      res.status(401).json({ error: result.error });
+      console.log('🐞 authController.ts > login(): AuthService failed with error:', result.error);
+      res.status(401).json({
+        success: false,
+        message: result.error
+      });
       return;
     }
 
@@ -48,10 +57,19 @@ const login = async (req: Request, res: Response): Promise<void> => {
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
-    res.json({ success: true, message: `Hello ${result.user.username}`, role: result.user.role });
+    res.json({
+      success: true,
+      message: `Hello ${result.user.username}`,
+      data: {
+        role: result.user.role
+      }
+    });
   } catch (error) {
-    log('Login error:', error);
-    res.status(500).json({ success: false, error: 'Internal server error' });
+    console.log('🐞 authController.ts > login(): error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error'
+    });
     return;
   }
 };

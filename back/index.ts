@@ -8,19 +8,23 @@ import cookieParser from 'cookie-parser';
 import { authRouter } from './routes/authRoutes';
 import { userRouter } from './routes/userRoutes';
 
-const PORT = 3000;
+const PORT = 3001;
 
+// limit 100 requests per 15 min
 const limiter = rateLimit({
-	windowMs: 15 * 60 * 1000, // 15 min
-	limit: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
-	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  windowMs: 15 * 60 * 1000,
+  limit: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
 })
 
 const app = express();
 
 // Middlewares
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true,
+}));
 app.use(limiter)
 app.use(helmet());
 app.use(cookieParser());
@@ -32,21 +36,21 @@ app.use('/user', userRouter);
 
 // App
 app.listen(PORT, () => {
-    console.log(`🚀 Server running at http://localhost:${PORT}`);
+  console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
-export default app;
+  export default app;
 
 
 
 
 
 
-//app.listen(PORT, () => {
-//  console.log(`🚀 Server running at http://localhost:${PORT}`);
-//});
-//if (require.main === module) {
-//  app.listen(PORT, () => {
-//    console.log(`🚀 Server running at http://localhost:${PORT}`);
-//  });
-//}
+  //app.listen(PORT, () => {
+  //  console.log(`🚀 Server running at http://localhost:${PORT}`);
+  //});
+  //if (require.main === module) {
+  //  app.listen(PORT, () => {
+  //    console.log(`🚀 Server running at http://localhost:${PORT}`);
+  //  });
+  //}
 

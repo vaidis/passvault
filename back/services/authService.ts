@@ -71,20 +71,20 @@ export async function authenticateUser(username: string, password: string): Prom
     const adapter = new JSONFile<Users>(dbPath);
     const db = new Low<Users>(adapter, defaultData);
 
-    //console.log(' 📮 authUser db 0', db)
     await db.read();
-    //console.log(' 📮 authUser db 1', db)
 
     db.data ||= { users: [] };
     const user = db.data.users.find((u: User) => u.username === username);
 
     // Check if the user exists
     if (!user) {
+      console.log('🐞 authService.ts > authenticateUser(): user not found');
       return { success: false, error: 'user not found' };
     }
 
     // check the password
     if (password !== user.password) {
+      console.log('🐞 authService.ts > authenticateUser(): password not found');
       return { success: false, error: 'Authentication failed' };
     }
 
@@ -99,7 +99,7 @@ export async function authenticateUser(username: string, password: string): Prom
       refreshToken
     };
   } catch (error) {
-    console.error('Authentication error:', error);
+    console.log('🐞 authService.ts > authenticateUser(): service error');
     return { success: false, error: 'Internal service error' };
   }
 }
