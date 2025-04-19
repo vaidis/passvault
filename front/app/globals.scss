@@ -1,0 +1,46 @@
+:root {
+  --background-light: #3e3e3e;
+  --background: #333333;
+  --background-dark: #222222;
+  --foreground-light: #bec3d0;
+  --foreground: #bec3d0;
+  --foreground-dark: #bec3d0;
+  --shadow-light: #3d3d3d;
+  --shadow-dark: #282828;
+  --primary: #689e5e;
+  --secondary: #e7e054;
+  --text: #ffffff;
+  --text-error: #CC6699;
+  --text-primary: #FFFFFF;
+  --text-secondary: #000000;
+
+  --border-radius: 4px;
+  --order-background: var(--primary);
+  --order-foreground: var(--text);
+}
+
+body {
+  margin: 0px;
+  padding: 0px;
+  color: var(--text);
+  background: var(--background);
+  background: #333333;
+  font-family: Arial, Helvetica, sans-serif;
+  font-family: karla;
+  transition: background 0.2s;
+}
+
+header {
+  color: var(--foreground-secondary);
+  background: var(--background-secondary);
+}
+
+footer {
+  color: var(--foreground-secondary);
+  background: var(--background-secondary);
+}
+
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text);
+}
