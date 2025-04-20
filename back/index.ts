@@ -22,7 +22,7 @@ const app = express();
 
 // Middlewares
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: 'http://localhost:5173',
   credentials: true,
 }));
 app.use(limiter)
@@ -38,19 +38,5 @@ app.use('/user', userRouter);
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
-  export default app;
-
-
-
-
-
-
-  //app.listen(PORT, () => {
-  //  console.log(`🚀 Server running at http://localhost:${PORT}`);
-  //});
-  //if (require.main === module) {
-  //  app.listen(PORT, () => {
-  //    console.log(`🚀 Server running at http://localhost:${PORT}`);
-  //  });
-  //}
+export default app;
 

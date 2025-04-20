@@ -7,7 +7,6 @@ import {
   verifyRefreshToken
 } from '../jwtTokens';
 import * as AuthService from '../services/authService';
-import { log } from "console";
 
 interface LoginRequest {
   username: string;
@@ -23,8 +22,7 @@ const login = async (req: Request, res: Response): Promise<void> => {
   try {
     // Basic validation
     if (!username || !password) {
-      console.log('🐞 authController.ts > login(): user & pass are required');
-      res.status(401).json({ 
+      res.status(401).json({
         success: false,
         message: 'Email and password are required.',
       });
@@ -34,7 +32,6 @@ const login = async (req: Request, res: Response): Promise<void> => {
     const result = await AuthService.authenticateUser(username, password);
 
     if (!result.success) {
-      console.log('🐞 authController.ts > login(): AuthService failed with error:', result.error);
       res.status(401).json({
         success: false,
         message: result.error
@@ -101,16 +98,16 @@ const refresh = async (req: Request, res: Response): Promise<void> => {
 
     // place tokens into secure cookies
     res.cookie('accessToken', newAccessToken, {
-      httpOnly: true,
-      secure: true,            // Only over HTTPS
-      sameSite: 'strict',      // Prevent CSRF
+      //httpOnly: true,
+      //secure: true,            // Only over HTTPS
+      //sameSite: 'strict',      // Prevent CSRF
       maxAge: 15 * 60 * 1000,  // 15 minutes
     });
 
     res.cookie('refreshToken', newRefreshToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'strict',
+      //httpOnly: true,
+      //secure: true,
+      //sameSite: 'strict',
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 

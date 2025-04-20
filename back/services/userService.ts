@@ -35,7 +35,7 @@ export async function findAllData (id: string) {
     const { items } = db.data;
     return {
       success: true,
-      items: items
+      data: items
     };
   } catch (error){
     return {

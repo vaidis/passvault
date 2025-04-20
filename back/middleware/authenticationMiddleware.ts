@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { log } from "console";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -21,7 +20,6 @@ declare global {
 // Ensure the user is logged in
 export const isAuthenticated = (req: Request, res: Response, next: NextFunction ): void => {
   if (!JWT_SECRET) {
-    log(' 🐞 isAuthenticated is not defined:')
     throw new Error('JWT_SECRET is not defined');
   }
 
