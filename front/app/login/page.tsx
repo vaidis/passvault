@@ -5,8 +5,6 @@ import * as Yup from "yup";
 import { useRouter } from 'next/navigation';
 import styles from "./page.module.scss";
 
-
-
 export interface SuccessResponse<T> {
   success: true;
   message: string;
@@ -20,8 +18,6 @@ export interface ErrorResponse {
 }
 
 export type ApiResponse<T> = SuccessResponse<T> | ErrorResponse;
-
-
 
 const Login = () => {
   const router = useRouter();
@@ -57,13 +53,13 @@ const Login = () => {
 
       console.log('login response status', response.status);
       console.log('login response json', json);
-      //if (response.ok) {
-      //  router.push('/user/ste')
-      //} else {
-      //  console.log('login error')
-      //}
+      if (json.success) {
+        router.push('/user/ste')
+      } else {
+        console.log('login response error')
+      }
     } catch (error) {
-      console.log('login error', error);
+      console.log('login POST error', error);
     }
   }
 
