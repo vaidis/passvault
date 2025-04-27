@@ -53,6 +53,7 @@ const Login = () => {
 
       console.log('login response status', response.status);
       console.log('login response json', json);
+
       if (json.success) {
         router.push('/user/ste')
       } else {
