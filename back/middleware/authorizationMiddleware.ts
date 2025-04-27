@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
-import { log } from "console";
+import { verifyAccessToken } from '../jwtTokens';
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -17,7 +16,8 @@ export const isAuthorized = (req: Request, res: Response, next: NextFunction): v
   }
 
   try {
-    const decoded = jwt.verify(req.cookies.accessToken, JWT_SECRET) as JwtPayload;
+    const token = req.cookies.accessToken;
+    const decoded = verifyAccessToken(token) as JwtPayload;
 
     // Ensure the user is authenticated first
     if (decoded.username != req.params.id) {

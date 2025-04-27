@@ -12,7 +12,7 @@ const PORT = 3001;
 
 // limit 100 requests per 15 min
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
+  windowMs: 115 * 60 * 1000,
   limit: 100,
   standardHeaders: true,
   legacyHeaders: false,
@@ -22,7 +22,7 @@ const app = express();
 
 // Middlewares
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: 'http://localhost:3000',
   credentials: true,
 }));
 app.use(limiter)

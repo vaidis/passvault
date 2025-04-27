@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
+import { verifyAccessToken } from '../jwtTokens';
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -28,6 +28,7 @@ export const isAuthenticated = (req: Request, res: Response, next: NextFunction 
 
     // check if tokken missing
     if (!token) {
+      console.log(' 🐞 Authentication required. Please log in.');
       res.status(401).json({
         success: false,
         message: ' 🐞 Authentication required. Please log in.'
@@ -35,10 +36,10 @@ export const isAuthenticated = (req: Request, res: Response, next: NextFunction 
       return;
     }
 
-    // Verify the token
-    const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
+    // Verify token
+    const decoded = verifyAccessToken(token);
 
-    // Add the user data to the request object
+    // Add user data to the request object
     req.user = decoded as JwtPayload;
 
     // Proceed to the next middleware/route handler
@@ -46,17 +47,10 @@ export const isAuthenticated = (req: Request, res: Response, next: NextFunction 
 
   } catch (error: unknown) {
     if (error instanceof Error) {
-      if (error.name === 'TokenExpiredError') {
-        res.status(402).json({
-          success: false,
-          message: ' 🐞 Session expired. Please log in again.'
-        });
-        return;
-      }
-
       res.status(402).json({
         success: false,
-        message: ' 🐞 Invalid authentication token.'
+        message: error.message,
+        name: error.name
       });
       return;
     }
