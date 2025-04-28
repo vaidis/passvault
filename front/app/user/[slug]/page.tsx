@@ -56,8 +56,19 @@ export default function Page() {
     console.log('edit', index);
   }
 
-  const deleteHandler = (index: number) => {
-    console.log('delete', index);
+  const deleteHandler = async (id: number) => {
+    console.log(`delete from user ${params.slug} the id ${id}`)
+
+    const res = await apiFetchWithRefresh(`http://localhost:3001/user/${params.slug}/delete/${id}`, { method: 'POST' });
+
+    if (!res.success) {
+      console.error('Failed to load user:', res.message);
+      setLoading(false);
+      return;
+    }
+
+    console.log('delete response:', JSON.stringify(res));
+    setData(res);
   }
 
   const copyHandler = (index: number) => {
@@ -100,7 +111,7 @@ export default function Page() {
                     Edit
                   </div>
                 </div>
-                <div className={styles.delete} onClick={() => deleteHandler(index)} >
+                <div className={styles.delete} onClick={() => deleteHandler(row.id)} >
                   <DeleteIcon color="#ff6688" />
                   <div className={styles.actionLabel}>
                     Delete

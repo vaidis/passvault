@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { verifyAccessToken } from '../jwtTokens';
+import { warn } from 'console';
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -18,6 +19,7 @@ export const isAuthorized = (req: Request, res: Response, next: NextFunction): v
   try {
     const token = req.cookies.accessToken;
     const decoded = verifyAccessToken(token) as JwtPayload;
+    console.log('🔒 authorizationMiddleware.ts > isAuthorized > decoded:', decoded);
 
     // Ensure the user is authenticated first
     if (decoded.username != req.params.id) {

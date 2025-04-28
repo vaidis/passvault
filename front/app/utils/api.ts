@@ -5,8 +5,8 @@ const apiBaseURL = 'http://localhost:3001';
 const apiAuthRefresh = `${apiBaseURL}/auth/refresh`;
 
 export async function apiFetch<T>(input: RequestInfo, init?: RequestInit): Promise<ApiResponse<T>> {
-  console.log('api.ts > apiFetch > input:', input);
-  console.log('api.ts > apiFetch > init:', init);
+  console.log('🏁 api.ts > apiFetch > input:', input);
+  console.log('🏁 api.ts > apiFetch > init:', init);
   const res = await fetch(input, {
     ...init,
     credentials: 'include',
@@ -15,16 +15,18 @@ export async function apiFetch<T>(input: RequestInfo, init?: RequestInit): Promi
 }
 
 export async function apiFetchWithRefresh<T>(input: RequestInfo, init?: RequestInit): Promise<ApiResponse<T>> {
-  let response = await apiFetch<T>(input, init);
-  console.log('response:', response)
+  console.log('🏁 api.ts apiFetchWithRefresh input:', input);
+  console.log('🏁 api.ts apiFetchWithRefresh init:', init);
 
+  let response = await apiFetch<T>(input, init);
+  console.log('🏁 response:', response)
 
   // refresh token
   if (!response.success && response.message === 'jwt expired') {
-    console.log('refresh token');
+    console.log('🏁 api.ts refresh token');
     const refresh = await apiFetch<{ message: string }>(apiAuthRefresh, { method: 'POST' });
     if (!refresh.success) {
-      console.warn('Refresh failed.');
+      console.warn('🏁 api.ts refresh failed.');
       return refresh as ErrorResponse;
     }
     response = await apiFetch<T>(input, init);

@@ -3,6 +3,7 @@ import { isAuthenticated } from '../middleware/authenticationMiddleware';
 import { isAuthorized } from '../middleware/authorizationMiddleware';
 import {
   getAllData,
+  deleteData
   //getUserById,
   //updateUser,
   //deleteUser
@@ -15,6 +16,7 @@ router.use(isAuthenticated);
 
 // Public routes (just authenticated)
 router.get('/:id', isAuthorized, getAllData);
+router.post('/:id/delete/:row', isAuthorized, deleteData)
 
 // Protected routes (authenticated + authorized)
 //router.get('/:id', isAuthorized, getUserById);
