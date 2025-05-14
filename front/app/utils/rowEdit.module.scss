@@ -1,0 +1,30 @@
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  margin: 10px 0px;
+}
+
+.label {
+  color: var(--foreground-dark);
+}
+
+.input {
+  padding: 10px;
+  color: var(--foreground-light);
+  background-color: var(--background-light);
+  border: none;
+}
+
+.button {
+  margin: 40px 0px 0px 0px;
+  margin-left: auto;
+  background-color: var(--primary);
+  color: var(--foreground);
+  border: none;
+  padding: 10px 20px;
+}
