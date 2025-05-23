@@ -12,4 +12,15 @@ export interface ErrorResponse {
 
 export type ApiResponse<T> = SuccessResponse<T> | ErrorResponse;
 
+export interface Item {
+  id: number;
+  title: string;
+  username: string;
+  password: string;
+  notes: string;
+  order: number;
+}
 
+export interface Items {
+  items: Item[];
+}

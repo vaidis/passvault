@@ -15,27 +15,28 @@ export async function apiFetch<T>(input: RequestInfo, init?: RequestInit): Promi
 }
 
 export async function apiFetchWithRefresh<T>(input: RequestInfo, init?: RequestInit): Promise<ApiResponse<T>> {
-  console.log('🏁 api.ts apiFetchWithRefresh input:', input);
-  console.log('🏁 api.ts apiFetchWithRefresh init:', init);
+  console.log('🏁 api.ts > apiFetchWithRefresh > input:', input);
+  console.log('🏁 api.ts > apiFetchWithRefresh > init:', init);
 
   let response = await apiFetch<T>(input, init);
-  console.log('🏁 response:', response)
+  console.log('🏁 api.ts > apiFetchWithRefresh > apiFetch >  response:', response)
 
   // refresh token
   if (!response.success && response.message === 'jwt expired') {
-    console.log('🏁 api.ts refresh token');
+    console.log('🏁 api.ts > apiFetchWithRefresh > refresh token');
     const refresh = await apiFetch<{ message: string }>(apiAuthRefresh, { method: 'POST' });
+
     if (!refresh.success) {
-      console.warn('🏁 api.ts refresh failed.');
-      return refresh as ErrorResponse;
+      console.log('🏁 api.ts > apiFetchWithRefresh > refresh failed.');
+      redirect('/login')
     }
+
     response = await apiFetch<T>(input, init);
   }
 
   if (!response.success) {
     redirect('/login');
   }
-
 
   return response;
 }
