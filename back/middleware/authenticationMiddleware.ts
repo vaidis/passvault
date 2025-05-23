@@ -24,20 +24,33 @@ export const isAuthenticated = (req: Request, res: Response, next: NextFunction 
   }
 
   try {
-    const token = req.cookies.accessToken;
+    const accessToken = req.cookies.accessToken;
+    const refreshToken = req.cookies.refreshToken;
+    console.log(' 🐞 authenticationMiddleware.ts > isAuthenticated > accessToken:', accessToken);
+    console.log(' 🐞 authenticationMiddleware.ts > isAuthenticated > refreshToken:', refreshToken);
+
+    // token expired
+    if (!accessToken && refreshToken) {
+      console.log(' 🐞 authenticationMiddleware.ts > isAuthenticated: Access token expired. Please refresh it');
+      res.status(499).json({
+        success: false,
+        message: 'jwt expired'
+      });
+      return;
+    }
 
     // check if tokken missing
-    if (!token) {
-      console.log(' 🐞 Authentication required. Please log in.');
-      res.status(401).json({
+    if (!accessToken && !refreshToken) {
+      console.log(' 🐞  authenticationMiddleware.ts > isAuthenticated: Authentication required. Please log in.');
+      res.status(499).json({
         success: false,
-        message: ' 🐞 Authentication required. Please log in.'
+        message: 'jwt missing'
       });
       return;
     }
 
     // Verify token
-    const decoded = verifyAccessToken(token);
+    const decoded = verifyAccessToken(accessToken);
 
     // Add user data to the request object
     req.user = decoded as JwtPayload;
