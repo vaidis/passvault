@@ -18,19 +18,67 @@ interface LoginRequest {
 //
 const login = async (req: Request, res: Response): Promise<void> => {
   console.log('login req:', req.body);
-  const { username, password }:LoginRequest = req.body;
+
   try {
-    // Basic validation
-    if (!username || !password) {
-      res.status(401).json({
+    // First, ensure we have a valid body object
+    if (!req.body || typeof req.body !== 'object') {
+      res.status(400).json({
         success: false,
-        message: 'Email and password are required.',
+        message: 'Invalid request format',
       });
       return;
     }
 
+    // Extract and sanitize credentials
+    let username: string = req.body.username;
+    let password: string = req.body.password;
+
+    // Basic type checking
+    if (typeof username !== 'string' || typeof password !== 'string') {
+      res.status(400).json({
+        success: false,
+        message: 'Username and password must be strings',
+      });
+      return;
+    }
+
+    // Trim whitespace
+    username = username.trim();
+    password = password.trim();
+
+    // Check if username and password are provided
+    if (!username || !password) {
+      res.status(401).json({
+        success: false,
+        message: 'Username and password are required',
+      });
+      return;
+    }
+
+    // Sanitize username: allow only alphanumeric characters and few symbols
+    const usernameRegex = /^[a-zA-Z0-9_.\-@]+$/;
+    if (!usernameRegex.test(username)) {
+      res.status(400).json({
+        success: false,
+        message: 'Username contains invalid characters',
+      });
+      return;
+    }
+
+    // Sanitize username: allow only alphanumeric characters and some symbols
+    const passwordRegex = /^[a-zA-Z0-9!@#$%^&*()]+$/;
+    if (!passwordRegex.test(password)) {
+      res.status(400).json({
+        success: false,
+        message: 'Password contains invalid characters',
+      });
+      return;
+    }
+
+    // check credentials
     const result = await AuthService.authenticateUser(username, password);
 
+    // invalid credentials
     if (!result.success) {
       res.status(401).json({
         success: false,
@@ -39,7 +87,7 @@ const login = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    // place tokens into secure cookies
+    // valid credentials: place tokens into secure cookies
     res.cookie('accessToken', result.accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -51,6 +99,7 @@ const login = async (req: Request, res: Response): Promise<void> => {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
+      //maxAge: 60 * 60 * 1000,  // 60 minutes
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
@@ -58,7 +107,8 @@ const login = async (req: Request, res: Response): Promise<void> => {
       success: true,
       message: `Hello ${result.user.username}`,
       data: {
-        role: result.user.role
+        role: result.user.role,
+        username: result.user.username
       }
     });
   } catch (error) {
@@ -75,10 +125,12 @@ const login = async (req: Request, res: Response): Promise<void> => {
 // GET /auth/refresh
 //
 const refresh = async (req: Request, res: Response): Promise<void> => {
+  console.log(' ⭐️ authController.ts > refresh()');
 
   // check if there is a refreshToken cookie
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) {
+    console.log(' ⭐️ authController.ts > refresh() > No refresh token provided');
     res.status(401).json({ success: false, error: 'No refresh token provided' });
     return;
   }
@@ -87,6 +139,7 @@ const refresh = async (req: Request, res: Response): Promise<void> => {
     // check if the refresh cookie cointains a valid refresh token
     const decoded = verifyRefreshToken(refreshToken);
     if (typeof decoded !== 'object' || decoded === null || !('username' in decoded)) {
+      console.log(' ⭐️ authController.ts > refresh() > Invalid token payload');
       res.status(403).json({ success: false, error: 'Invalid token payload' });
       return;
     }
@@ -101,18 +154,16 @@ const refresh = async (req: Request, res: Response): Promise<void> => {
       //httpOnly: true,
       //secure: true,            // Only over HTTPS
       //sameSite: 'strict',      // Prevent CSRF
-      maxAge: 15 * 60 * 1000,  // 15 minutes
+      maxAge: 1 * 60 * 1000,  // 15 minutes
     });
 
     res.cookie('refreshToken', newRefreshToken, {
-      //httpOnly: true,
-      //secure: true,
-      //sameSite: 'strict',
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
     res.json({ success: true, role: payload.role });
   } catch (err) {
+    console.log(' ⭐️ authController.ts > refresh() > Invalid or expired refresh token');
     res.status(403).json({ success: false, error: 'Invalid or expired refresh token' });
     return;
   }
@@ -158,6 +209,7 @@ const user = async (req: Request, res: Response): Promise<void> => {
 // /auth/logout
 //
 const logout = async (req: Request, res: Response): Promise<void> => {
+  console.log('logout req:', req)
   try {
     res.clearCookie('accessToken');
     res.clearCookie('refreshToken');
