@@ -28,13 +28,15 @@
   width: 500px;
   margin: 0 auto;
   z-index: 1001;
+  padding: 40px;
 }
 
 .modalHeader {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  padding: 20px 20px 0px 20px;
+  align-items: center;
+  margin-bottom: 20px;
+  // padding: 20px 20px 0px 20px;
 }
 
 .modalTitle {
@@ -64,6 +66,6 @@
   color: #ff5533;
 }
 
-.modalBody {
-  padding: 0px 20px 60px 20px;
-}
+// .modalBody {
+//   padding: 0px 20px 60px 20px;
+// }

@@ -56,13 +56,12 @@ const Modal: React.FC<ModalProps> = ({
       >
         <div className={styles.modalHeader}>
           <h2>{title}</h2>
-          <button
-            type="button"
+          <div
             className={styles.modalCloseButton}
             onClick={onClose}
           >
             ✕
-          </button>
+          </div>
         </div>
         <div className={styles.modalBody}>{children}</div>
       </div>
