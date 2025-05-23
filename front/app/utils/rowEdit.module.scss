@@ -3,6 +3,13 @@
   flex-direction: column;
 }
 
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+
 .field {
   display: flex;
   flex-direction: column;
@@ -13,18 +20,26 @@
   color: var(--foreground-dark);
 }
 
-.input {
-  padding: 10px;
-  color: var(--foreground-light);
-  background-color: var(--background-light);
-  border: none;
+
+.error {
+  display: block;
+  color: var(--text-error);
+  text-align: right;
+  min-height: 15px;
+  font-size: 12px;
+  margin-top:5px;
 }
 
 .button {
-  margin: 40px 0px 0px 0px;
+  margin: 20px 0px 0px 0px;
   margin-left: auto;
   background-color: var(--primary);
-  color: var(--foreground);
+  color: var(--white);
   border: none;
   padding: 10px 20px;
+  cursor: pointer;
+}
+
+.buttonLabel {
+  margin-left: 15px;
 }

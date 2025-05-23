@@ -1,7 +1,9 @@
 import { apiFetchWithRefresh } from './api';
 import { Item } from './api.types';
+import styles from './rowDelete.module.scss';
+import { DeleteIcon } from '../icons/deleteIcon';
 
-export default function RowDelete({row, user, setData}: {row: Item;  user: string; setData: any}) {
+export default function RowDelete({row, user, setData, closeModal }: {row: Item;  user: string; setData: any, closeModal: ()=>{} }) {
 
   const URL =`http://localhost:3001/data/${user}/delete/${row.id}`;
 
@@ -11,13 +13,17 @@ export default function RowDelete({row, user, setData}: {row: Item;  user: strin
       console.error('Failed to load user:', res.message);
       return;
     }
-    setData(res);
+    setData(res.data);
+    closeModal()
   }
 
   return (
     <div>
       <p>Are you sure you don't need the password of {row.title}?</p>
-      <button onClick={deleteHandler}>Delete it{row.id}</button>
+      <button className={styles.button} onClick={deleteHandler}>
+        <DeleteIcon color="#000000" />
+        Delete
+      </button>
     </div>
   );
 }
