@@ -1,26 +1,38 @@
 "use client"
 
+import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useRouter } from 'next/navigation';
 import styles from "./page.module.scss";
 
-export interface SuccessResponse<T> {
-  success: true;
-  message: string;
-  data: T;
+export interface Credentials {
+  username: string;
+  password: string;
 }
 
-export interface ErrorResponse {
+export interface SuccessData {
+  role: string;
+  username: string;
+}
+
+export interface ApiResponseSuccess<Data> {
+  success: true;
+  message: string;
+  data: Data;
+}
+
+export interface ApiResponseError {
   success: false;
   message: string;
   data?: never;
 }
 
-export type ApiResponse<T> = SuccessResponse<T> | ErrorResponse;
+export type ApiResponse<SuccessData> = ApiResponseSuccess<SuccessData> | ApiResponseError;
 
 const Login = () => {
   const router = useRouter();
+  const [loginError, setLoginError] = React.useState<string | null>(null);
 
   const initialValues = {
     username: "",
@@ -32,16 +44,8 @@ const Login = () => {
     password: Yup.string().required("Password is required"),
   });
 
-  interface Credentials {
-    username: string;
-    password: string;
-  }
-
-  interface Login {
-    role: string;
-  }
   const handleSubmit = async (values: Credentials) => {
-    console.log('login values', values);
+    setLoginError(null);
     try {
       const response = await fetch('http://localhost:3001/auth/login', {
         method: 'POST',
@@ -49,18 +53,23 @@ const Login = () => {
         credentials: 'include',
         body: JSON.stringify(values),
       })
-      const json = (await response.json()) as ApiResponse<Login>;
 
-      console.log('login response status', response.status);
-      console.log('login response json', json);
+      if (!response.status) {
+        setLoginError('!response.ok');
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const json = (await response.json()) as ApiResponse<SuccessData>;
 
       if (json.success) {
-        router.push('/user/ste')
+        router.push(`/data/${json.data.username}`)
       } else {
+        setLoginError(json.message);
         console.log('login response error')
       }
     } catch (error) {
-      console.log('login POST error', error);
+      setLoginError(String(error));
+      console.log('login catch error', error);
     }
   }
 
@@ -76,7 +85,7 @@ const Login = () => {
 
           <div className={styles.formGroup}>
             <label>Username</label>
-            <Field type="text" name="username" className={styles.input} />
+            <Field type="text" name="username" className={styles.input} autoFocus={true} />
             <div className={styles.error}>
               <ErrorMessage name="username" component="div" />
             </div>
@@ -93,6 +102,13 @@ const Login = () => {
           <button type="submit" disabled={isSubmitting} className={styles.submitButton}>
             {isSubmitting ? "Submitting..." : "Login"}
           </button>
+
+          {loginError && (
+            <div className={styles.error}>
+              {loginError}
+            </div>
+          )}
+
         </Form>
       )}
     </Formik>

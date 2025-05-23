@@ -2,29 +2,24 @@
   color: var(--text);
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  padding: 40px;
   gap: 10px;
+  background-color: var(--background);
+  margin-top: 20px;
+  border-radius: 5px;
 }
 
 .title {
   padding-top: 0px;
-  margin: 0px;
+  margin-bottom: 40px;
   text-align: center;
 }
+
 .formGroup {
   display: flex;
   flex-direction: column;
   margin-bottom: 0px;
   position: relative;
-}
-
-
-.formGroup > .input {
-  color: var(--text);
-  background: var(--background-light);
-  border-radius: var(--border-radius);
-  border: none;
-  padding: 10px;
 }
 
 .dateTime {
@@ -42,13 +37,14 @@
   text-align: right;
   min-height: 15px;
   font-size: 12px;
+  margin-top:5px;
 }
 
 .submitButton {
   margin-top: 20px;
   padding: 10px;
-  background-color: var(--secondary);
-  color: var(--text-secondary);
+  background-color: var(--blue);
+  color: var(--white);
   border: none;
   cursor: pointer;
   border-radius: 5px;
@@ -59,3 +55,4 @@
   background-color: #aaa;
   cursor: not-allowed;
 }
+
