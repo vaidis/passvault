@@ -1,28 +1,21 @@
 import { Request, Response } from 'express';
-import { findAllData, deleteRow} from '../services/userService';
+import { getProfileData, setProfileData} from '../services/userService';
 
-export const getAllData = async (req: Request, res: Response): Promise<void> => {
+export const getProfile = async (req: Request, res: Response): Promise<void> => {
   try {
-    const response = await findAllData(req.params.id);
-    //console.log('⚙️  userController.ts > getAllData() req.cookies:', req.cookies);
-    //console.log('⚙️  userController.ts > getAllData() response:', response);
+    const response = await getProfileData(req.params.username);
     res.json(response);
   } catch (error) {
     res.status(500).json({ success: false, message: 'Error fetching data' });
   }
 };
 
-export const deleteData = async (req: Request, res: Response): Promise<void> => {
+export const setProfile = async (req: Request, res: Response): Promise<void> => {
   try {
-    const response = await deleteRow(req.params.id, Number(req.params.row));
-    console.log('⚙️  userController.ts > deleteRow() req.cookies:', req.cookies);
-    console.log('⚙️  userController.ts > deleteRow() response:', response);
+    const response = await setProfileData(req.params.username, req.body);
     res.json(response);
   } catch (error) {
     res.status(500).json({ success: false, message: 'Error fetching data' });
   }
 };
-
-
-
 

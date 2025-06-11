@@ -1,53 +1,78 @@
+import { warn } from 'console';
 import { Low } from 'lowdb';
 import { JSONFile } from 'lowdb/node';
-import { JSONFilePreset } from 'lowdb/node'
 
-interface Item {
+export interface User {
   id: number;
-  title: string;
+  username: string;
   password: string;
-  notes: string;
-  order: number;
+  email: string;
+  role: string;
 }
 
-interface Items {
-  items: Item[];
+export interface Users {
+  users: User[];
 }
 
-export type GetItemsSuccess = {
+export interface Db {
+  write: () => {};
+  read: () => {};
+  data: Users;
+}
+
+export type GetProfileSuccess = {
   success: true;
-  items: Item[];
+  users: User[];
 }
 
-export type GetItemsFailure = {
+export type GetProfileFailure = {
   success: false;
   error: string;
 }
 
-export type GetItemsResult = GetItemsSuccess | GetItemsFailure;
+export type GetProfileResult = GetProfileSuccess | GetProfileFailure;
 
-export async function findAllData (id: string) {
+async function getDatabase() {
+  const dbPath = '/home/ste/Documents/Dev/passvault/back/db/users.db.json';
+  const defaultData: Users = { users: [] };
+  const adapter = new JSONFile<Users>(dbPath);
+  const db = new Low<Users>(adapter, defaultData);
+  await db.read();
+  return db;
+}
+
+async function getDatabaseProfile(db: Db, username:string): Promise<User | null> {
+  const user = db.data.users.find((user: User) => user.username === username);
+  if (!user) {
+    return null;
+  }
+  return user;
+}
+
+async function setDatabaseProfile(db: Db, newProfile: User): Promise<User | null> {
+  const profile = await getDatabaseProfile(db, newProfile.username);
+  if (profile) {
+    profile.email = newProfile.email;
+    profile.password = newProfile.password;
+  }
+  db.write();
+  return profile;
+}
+
+export async function getProfileData(username: string) {
   try {
-    // get the users database
-    const dbPath = `db/data/${id}.db.json`;
-    const defaultData: Items = { items: [] };
-    const adapter = new JSONFile<Items>(dbPath);
-    const db = new Low<Items>(adapter, defaultData);
-
-    // prepare database for changes
-    await db.read();
-
-    // get all data
-    db.data ||= { items: [] };
-    const { items } = db.data;
-
-    // send data to user
-    // send changes to frontend
+    const db = await getDatabase();
+    const user = await getDatabaseProfile(db, username);
+    if (!user) {
+      return {
+        success: false,
+      }
+    }
     const response = {
       success: true,
-      data: items
+      data: user
     };
-    console.log('🫐 userService.ts > findAllData > response:', response)
+    console.log(`🫐 userService.ts > getProfileData > response: ${response}`);
     return response;
   } catch (error){
     return {
@@ -57,44 +82,23 @@ export async function findAllData (id: string) {
   }
 }
 
-export async function deleteRow (id: string, row: number) {
-  console.log(`deleteRow ${id} ${row}`)
+export async function setProfileData(username: string, newProfile: User) {
+  console.log('🫐 userService.ts > setProfileData > profile:', newProfile);
   try {
-    // get the users database
-    const dbPath = `db/data/${id}.db.json`;
-    const defaultData: Items = { items: [] };
-    const db = await JSONFilePreset<Items>(dbPath, defaultData);
-
-    // prepare database for changes
-    db.read()
-
-    // find the index to be deleted
-    const data = db.data as Items;
-    const index = data.items.findIndex((item: Item) => item.id === row);
-
-    // If index not found, return false
-    if (index === -1) {
-      console.error(`No item found with id ${row}`);
-      return false;
-    }
-
-    // if index found, remove the item
-    data.items.splice(index, 1);
-
-    // write changes
-    db.write()
-
-    // send changes to frontend
+    const db = await getDatabase();
+    const profile = await setDatabaseProfile(db, newProfile);
+    console.log('🫐 userService.ts > setProfileData > profile:', profile);
     const response = {
       success: true,
-      data: data.items
+      data: profile
     };
-    console.log('🫐 userService.ts > deleteRow > response:', JSON.stringify(response))
+    console.log(`🫐 userService.ts > setProfileData > response: ${response}`);
     return response;
-} catch (error){
+  } catch (error){
     return {
       success: false,
       error: 'Failed to retrieve item from database'
     };
   }
 }
+
