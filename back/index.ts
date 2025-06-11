@@ -6,6 +6,7 @@ import { rateLimit } from 'express-rate-limit'
 import cookieParser from 'cookie-parser';
 
 import { authRouter } from './routes/authRoutes';
+import { dataRouter } from './routes/dataRoutes';
 import { userRouter } from './routes/userRoutes';
 
 const PORT = 3001;
@@ -13,7 +14,7 @@ const PORT = 3001;
 // limit 100 requests per 15 min
 const limiter = rateLimit({
   windowMs: 115 * 60 * 1000,
-  limit: 100,
+  limit: 2100,
   standardHeaders: true,
   legacyHeaders: false,
 })
@@ -32,11 +33,13 @@ app.use(bodyParser.json());
 
 // Routes
 app.use('/auth', authRouter);
+app.use('/data', dataRouter);
 app.use('/user', userRouter);
 
 // App
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
+
 export default app;
 
