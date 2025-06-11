@@ -22,7 +22,7 @@ export const isAuthorized = (req: Request, res: Response, next: NextFunction): v
     console.log('🔒 authorizationMiddleware.ts > isAuthorized > decoded:', decoded);
 
     // Ensure the user is authenticated first
-    if (decoded.username != req.params.id) {
+    if (decoded.username != req.params.username) {
       res.status(401).json({
         success: false,
         message: 'Access denied: You can only access your own data'
