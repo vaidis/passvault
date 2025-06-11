@@ -44,7 +44,6 @@ export default function RowEdit({row, user, setData, closeModal}: {row: Item;  u
           'Content-Type': 'application/json'
         },
       });
-
       if (!res.success) {
         console.error('Failed to save changes:', res.message);
         return;
