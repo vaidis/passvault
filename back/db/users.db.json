@@ -1,6 +1,18 @@
 {
-  "users":[
-    {"id":1, "username":"admin", "password":"1234", "role":"admin"},
-    {"id":2, "username":"ste", "password":"1234", "role":"user"}
+  "users": [
+    {
+      "id": 1,
+      "username": "admin",
+      "password": "1234",
+      "role": "admin",
+      "email": "ste@vaidis.eu"
+    },
+    {
+      "id": 2,
+      "username": "ste",
+      "password": "1111",
+      "role": "user",
+      "email": "xxx@yyy.zzz567890ABCDccccccccccccc"
+    }
   ]
 }
