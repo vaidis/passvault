@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import { findAllData, deleteRow, editRow, newRow } from '../services/dataService';
+import { findData, deleteRow, editRow, newRow } from '../services/dataService';
 
-export const getAllData = async (req: Request, res: Response): Promise<void> => {
+export const getData = async (req: Request, res: Response): Promise<void> => {
   try {
-    const response = await findAllData(req.params.username);
+    const response = await findData(req.params.username);
     res.json(response);
   } catch (error) {
     res.status(500).json({ success: false, message: 'Error fetching data' });

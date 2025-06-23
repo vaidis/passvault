@@ -3,7 +3,7 @@ import express from 'express';
 import { isAuthenticated } from '../middleware/authenticationMiddleware';
 import { isAuthorized } from '../middleware/authorizationMiddleware';
 import {
-  getAllData,
+  getData,
   deleteData,
   editData,
   newData
@@ -15,7 +15,7 @@ const router = express.Router();
 router.use(isAuthenticated);
 
 // Public routes (just authenticated)
-router.get('/:username', isAuthorized, getAllData);
+router.get('/:username', isAuthorized, getData);
 router.post('/:username/new', isAuthorized, newData)
 router.post('/:username/edit/:rowId', isAuthorized, editData)
 router.post('/:username/delete/:row', isAuthorized, deleteData)
