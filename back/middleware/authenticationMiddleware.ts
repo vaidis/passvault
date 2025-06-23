@@ -26,12 +26,12 @@ export const isAuthenticated = (req: Request, res: Response, next: NextFunction 
   try {
     const accessToken = req.cookies.accessToken;
     const refreshToken = req.cookies.refreshToken;
-    console.log(' 🐞 authenticationMiddleware.ts > isAuthenticated > accessToken:', accessToken);
-    console.log(' 🐞 authenticationMiddleware.ts > isAuthenticated > refreshToken:', refreshToken);
+    //console.log('🐞 authenticationMiddleware.ts > isAuthenticated > accessToken:', accessToken);
+    //console.log('🐞 authenticationMiddleware.ts > isAuthenticated > refreshToken:', refreshToken);
 
     // token expired
     if (!accessToken && refreshToken) {
-      console.log(' 🐞 authenticationMiddleware.ts > isAuthenticated: Access token expired. Please refresh it');
+      //console.log('🐞 authenticationMiddleware.ts > isAuthenticated: jwt expired');
       res.status(499).json({
         success: false,
         message: 'jwt expired'
@@ -41,7 +41,7 @@ export const isAuthenticated = (req: Request, res: Response, next: NextFunction 
 
     // check if tokken missing
     if (!accessToken && !refreshToken) {
-      console.log(' 🐞  authenticationMiddleware.ts > isAuthenticated: Authentication required. Please log in.');
+      //console.log('🐞  authenticationMiddleware.ts > isAuthenticated: jwt missing');
       res.status(499).json({
         success: false,
         message: 'jwt missing'

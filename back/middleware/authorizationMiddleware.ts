@@ -12,14 +12,12 @@ export interface JwtPayload {
 // Middleware to check if user is authorized to access specific resources
 export const isAuthorized = (req: Request, res: Response, next: NextFunction): void => {
   if (!JWT_SECRET) {
-    console.log('🔒 authorizationMiddleware.ts > isAuthorized > JWT not defined');
     throw new Error('JWT_SECRET is not defined');
   }
 
   try {
     const token = req.cookies.accessToken;
     const decoded = verifyAccessToken(token) as JwtPayload;
-    console.log('🔒 authorizationMiddleware.ts > isAuthorized > decoded:', decoded);
 
     // Ensure the user is authenticated first
     if (decoded.username != req.params.username) {

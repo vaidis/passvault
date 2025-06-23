@@ -8,17 +8,15 @@ import {
 } from '../jwtTokens';
 import * as AuthService from '../services/authService';
 
-interface LoginRequest {
-  username: string;
-  password: string;
-}
+//interface LoginRequest {
+//  username: string;
+//  password: string;
+//}
 
 //
 // POST /auth/login
 //
 const login = async (req: Request, res: Response): Promise<void> => {
-  console.log('login req:', req.body);
-
   try {
     // First, ensure we have a valid body object
     if (!req.body || typeof req.body !== 'object') {
@@ -46,7 +44,7 @@ const login = async (req: Request, res: Response): Promise<void> => {
     username = username.trim();
     password = password.trim();
 
-    // Check if username and password are provided
+    // Check if username and password are both provided
     if (!username || !password) {
       res.status(401).json({
         success: false,
@@ -78,7 +76,7 @@ const login = async (req: Request, res: Response): Promise<void> => {
     // check credentials
     const result = await AuthService.authenticateUser(username, password);
 
-    // invalid credentials
+    // invalid credentials: abort
     if (!result.success) {
       res.status(401).json({
         success: false,
@@ -103,6 +101,7 @@ const login = async (req: Request, res: Response): Promise<void> => {
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
+    // respond successfully
     res.json({
       success: true,
       message: `Hello ${result.user.username}`,
