@@ -1,6 +1,5 @@
-import { Low } from 'lowdb';
-import { JSONFile } from 'lowdb/node';
 import { JwtPayload } from 'jsonwebtoken';
+import { getUserDB } from '../utils/getDatabase';
 import {
   generateAccessToken,
   generateRefreshToken,
@@ -66,14 +65,7 @@ export type UserInfoResult = UserInfoSuccess | UserInfoFailure;
 export async function authenticateUser(username: string, password: string): Promise<AuthResult> {
   try {
     // get the user
-    const dbPath = '/home/ste/Documents/Dev/passvault/back/db/users.db.json';
-    const defaultData: Users = { users: [] };
-    const adapter = new JSONFile<Users>(dbPath);
-    const db = new Low<Users>(adapter, defaultData);
-
-    await db.read();
-
-    db.data ||= { users: [] };
+    const db = await getUserDB();
     const user = db.data.users.find((u: User) => u.username === username);
 
     // Check if the user exists

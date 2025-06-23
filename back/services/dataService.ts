@@ -1,5 +1,4 @@
-import { Low } from 'lowdb';
-import { JSONFile } from 'lowdb/node';
+import { getDataDB } from '../utils/getDatabase';
 
 export interface Item {
   id: number;
@@ -26,35 +25,23 @@ export type GetItemsFailure = {
 
 export type GetItemsResult = GetItemsSuccess | GetItemsFailure;
 
-async function getDatabase(username:string) {
-    const dbPath = `db/data/${username}.db.json`;
-    const defaultData: Items = { items: [] };
-    const adapter = new JSONFile<Items>(dbPath);
-    const db = new Low<Items>(adapter, defaultData);
-    return db;
-}
-
 async function getData(username:string): Promise<Item[]> {
-    // get database
-    const db = await getDatabase(username);
-    await db.read();
+  // get database
+  const db = await getDataDB(username);
 
-    // get all data
-    db.data ||= { items: [] };
-    const { items } = db.data;
-    const data = items.sort((a:Item, b:Item) => a.title.localeCompare(b.title))
-    return data;
+  // send all data
+  const { items } = db.data;
+  const data = items.sort((a:Item, b:Item) => a.title.localeCompare(b.title))
+  return data;
 }
 
-export async function findAllData (username: string) {
+export async function findData (username: string) {
   try {
     const newData = await getData(username);
     const response = {
       success: true,
       data: newData
     };
-    console.log(`🫐 userService.ts > findAllData > request: ${username}`);
-    console.log(`🫐 userService.ts > findAllData > response: ${response}`);
     return response;
   } catch (error){
     return {
@@ -65,13 +52,11 @@ export async function findAllData (username: string) {
 }
 
 export async function deleteRow (username: string, row: number) {
-  console.log(`🫐 userService.ts > deleteRow: ${username} ${row}`);
   try {
     // get database
-    const db = await getDatabase(username);
-    await db.read();
+    const db = await getDataDB(username);
 
-    // find the index to be deleted
+    // find the row
     const data = db.data as Items;
     const index = data.items.findIndex((item: Item) => item.id === row);
 
@@ -92,9 +77,8 @@ export async function deleteRow (username: string, row: number) {
       success: true,
       data: newData
     };
-    console.log(`🫐 userService.ts > deleteRow < response: ${response}`);
     return response;
-} catch (error){
+  } catch (error){
     return {
       success: false,
       error: 'Failed to retrieve item from database'
@@ -103,13 +87,9 @@ export async function deleteRow (username: string, row: number) {
 }
 
 export async function editRow (username: string, rowId: Number, row: Item) {
-  console.log(`🫐 userService.ts > editRow > request: ${username} ${rowId} ${JSON.stringify(row)}`)
-
   try {
     // get database
-    const db = await getDatabase(username);
-    await db.read();
-    db.data ||= { items: [] };
+    const db = await getDataDB(username);
 
     // find the index to be changed
     const index = db.data.items.findIndex((item: Item) => item.id === rowId);
@@ -144,10 +124,8 @@ export async function editRow (username: string, rowId: Number, row: Item) {
       success: true,
       data: newData
     };
-    console.log(`🫐 userService.ts > editRow > response: ${response.data}`)
     return response;
-
-} catch (error){
+  } catch (error){
     return {
       success: false,
       error: 'Failed to retrieve item from database'
@@ -156,13 +134,9 @@ export async function editRow (username: string, rowId: Number, row: Item) {
 }
 
 export async function newRow (username: string, row: Item) {
-  console.log(`🫐 userService.ts > newRow > request: ${username} ${JSON.stringify(row)}`)
-
   try {
     // get database
-    const db = await getDatabase(username);
-    await db.read();
-    db.data ||= { items: [] };
+    const db = await getDataDB(username);
 
     // Create the updated item
     const newItem = {
@@ -186,9 +160,8 @@ export async function newRow (username: string, row: Item) {
       success: true,
       data: newData
     };
-    console.log(`🫐 userService.ts > addRow > response: ${response.data}`)
     return response;
-} catch (error){
+  } catch (error){
     return {
       success: false,
       error: 'Failed to retrieve item from database'
