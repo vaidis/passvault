@@ -1,21 +1,19 @@
 import { JwtPayload } from 'jsonwebtoken';
-import { getUserDB } from '../utils/getDatabase';
+import { getUserDB, getRegisterDB } from '../utils/getDatabase';
 import {
   generateAccessToken,
   generateRefreshToken,
   verifyAccessToken,
   verifyRefreshToken
 } from '../jwtTokens';
+import { warn } from 'console';
 
-interface User {
-  id: number;
-  username: string;
-  password: string;
-  role: 'admin' | 'user';
-}
-
-interface Users {
-  users: User[]
+export interface User {
+    email: string;
+    username: string;
+    encryptSalt: string;
+    authSalt: string;
+    authProof: string;
 }
 
 export type AuthSuccess = {
@@ -58,6 +56,86 @@ export type UserInfoFailure = {
 }
 
 export type UserInfoResult = UserInfoSuccess | UserInfoFailure;
+
+export type RegisterData = {
+    email: string;
+    username: string;
+    encryptSalt: string;
+    authSalt: string;
+    authProof: string;
+}
+
+export type RegisterResult = {
+  success: boolean;
+}
+
+export async function getRegisterId(id: string): Promise<Boolean> {
+  try {
+    // get the user
+    const db = await getRegisterDB();
+    const registeredId = db.data.id.find((databaseId: string) => databaseId === id);
+    console.log('🐞 authService.ts > registeredId:', registeredId );
+
+    // Check if the user exists
+    if (registeredId) {
+      return true;
+    }
+    console.log('🐞 authService.ts > authenticateUser(): user not found');
+    return false;
+
+  } catch (error) {
+    console.log('🐞 authService.ts >getRegisterId(): service error');
+    return false;
+  }
+}
+
+export async function registerUser(userData: User): Promise<Boolean> {
+  try {
+
+    // get the user
+    const db = await getUserDB();
+
+    // update
+    db.data.users.push(userData);
+
+    // Write changes using LowDB's mechanism
+    await db.write();
+
+    console.log('🐞 authService.ts > registerUser: data', userData);
+
+    // send success message
+
+
+    // redirect to /auth/login
+
+    return true;
+  } catch (error) {
+    console.log('🐞 authService.ts > registerUser: service error');
+    return false;
+  }
+}
+
+//
+// needed to prevent registering accounts with the same username
+//
+export async function isUserExist(username: string): Promise<Boolean> {
+  try {
+    // get the user
+    const db = await getUserDB();
+    const user = db.data.users.find((u: User) => u.username === username);
+
+    // Check if the user exists
+    if (user) {
+      console.log('🐞 authService.ts > isUserExist: true');
+      return true;
+    }
+
+    return false;
+  } catch (error) {
+    console.log('🐞 authService.ts > isUserExist: error');
+    return false;
+  }
+}
 
 /**
  * Authenticates a user with username and password
