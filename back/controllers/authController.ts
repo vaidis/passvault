@@ -8,10 +8,133 @@ import {
 } from '../jwtTokens';
 import * as AuthService from '../services/authService';
 
-//interface LoginRequest {
-//  username: string;
-//  password: string;
-//}
+//
+// POST /auth/register
+//
+const register = async (req: Request, res: Response): Promise<void> => {
+  console.log('🐞 authController.ts > register() req.body:', req.body);
+
+  // check the register url
+  try {
+    const registerId = req.params.registerId;
+    const isRegisterIdExist = await AuthService.getRegisterId(registerId);
+    console.log('🐞 authController.ts > register() isRegisterIdExist:', isRegisterIdExist);
+
+    if (!isRegisterIdExist) {
+      res.status(500).json({
+        success: false,
+        message: 'Register ID not found'
+      });
+      return;
+    }
+  } catch (error){
+    res.status(500).json({
+      success: false,
+      message: 'Register server error'
+    });
+    return;
+  }
+
+  console.log('authController.ts register id founded')
+  console.log('authController.ts typeof req.body', typeof req.body)
+  console.log('authController.ts typeof body', req.body)
+  try {
+    // First, ensure we have a valid body object
+    if (!req.body || typeof req.body !== 'object') {
+      res.status(400).json({
+        success: false,
+        message: 'Invalid request format',
+      });
+      return;
+    }
+
+    // Extract and sanitize credentials
+    let email: string = req.body.email;
+    let username: string = req.body.username;
+    let encryptSalt: string = req.body.encryptSalt;
+    let authSalt: string = req.body.authSalt;
+    let authProof: string = req.body.authProof;
+
+    // String type checking
+    if ( typeof email !== 'string' ) {
+      res.status(400).json({
+        success: false,
+        message: 'Registration email must be type of string',
+      });
+      return;
+    }
+
+    if ( typeof username !== 'string' ) {
+      res.status(400).json({
+        success: false,
+        message: 'Registration username must be type of string',
+      });
+      return;
+    }
+
+    if (
+      typeof encryptSalt !== 'string' ||
+      typeof authSalt !== 'string' ||
+      typeof authProof !== 'string'
+    ) {
+      res.status(400).json({
+        success: false,
+        message: 'All registration data must be strings',
+      });
+      return;
+    }
+
+    // Trim whitespace
+    email = email.trim();
+    username = username.trim();
+    encryptSalt = encryptSalt.trim();
+    authSalt = authSalt.trim();
+    authProof = authProof.trim();
+
+    // Check if username and password are both provided
+    if (
+      !email ||
+      !username ||
+      !encryptSalt ||
+      !authSalt ||
+      !authProof
+    ) {
+      res.status(401).json({
+        success: false,
+        message: 'Registration data missing',
+      });
+      return;
+    }
+
+    const registerData = {email, username, encryptSalt, authSalt, authProof};
+
+    // check if username exist
+    const userExist = await AuthService.isUserExist(username)
+    if (userExist) {
+      res.status(500).json({
+        success: false,
+        message: 'Username already exist'
+      });
+      return;
+    }
+
+    const isUserRegistered = await AuthService.registerUser(registerData);
+    //console.log('🐞 authController.ts > register(): isUserRegistered:', isUserRegistered);
+
+    // respond successfully
+    res.status(200).json({
+      success: true,
+      message: `User ${username} has been registered. Redirecting to login.`,
+    });
+  } catch (error) {
+    //console.log('🐞 authController.ts > register(): error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Register server error'
+    });
+    return;
+  }
+}
 
 //
 // POST /auth/login
@@ -218,5 +341,17 @@ const logout = async (req: Request, res: Response): Promise<void> => {
   }
 }
 
-export { login, refresh, user, logout };
+//
+// /auth/user
+//
+//const user = async (res: Response): Promise<void> => {
+//  console.log('user:')
+//  try {
+//    res.status(200).json({ success: true, message: 'User function executed' });
+//  } catch (error) {
+//    res.status(500).json({ error: 'Internal server error' });
+//  }
+//}
+
+export { login, refresh, register, logout, user };
 

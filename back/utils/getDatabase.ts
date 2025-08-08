@@ -15,11 +15,11 @@ export interface Items {
 }
 
 export interface User {
-  id: number;
-  username: string;
-  password: string;
-  email: string;
-  role: string;
+    email: string;
+    username: string;
+    encryptSalt: string;
+    authSalt: string;
+    authProof: string;
 }
 
 export interface Users {
@@ -30,6 +30,10 @@ export interface Db {
   write: () => {};
   read: () => {};
   data: Users;
+}
+
+export interface RegisterIds {
+  id: string[]
 }
 
 export async function getDataDB(username:string) {
@@ -47,6 +51,15 @@ export async function getUserDB() {
   const defaultData: Users = { users: [] };
   const adapter = new JSONFile<Users>(dbPath);
   const db = new Low<Users>(adapter, defaultData);
+  await db.read();
+  return db;
+}
+
+export async function getRegisterDB() {
+  const dbPath = 'db/register.db.json';
+  const defaultData: RegisterIds = { id: [] };
+  const adapter = new JSONFile<RegisterIds>(dbPath);
+  const db = new Low<RegisterIds>(adapter, defaultData);
   await db.read();
   return db;
 }

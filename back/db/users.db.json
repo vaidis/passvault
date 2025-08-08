@@ -1,18 +1,25 @@
 {
   "users": [
     {
-      "id": 1,
-      "username": "admin",
-      "password": "1234",
-      "role": "admin",
-      "email": "ste@vaidis.eu"
+      "email": "ste.vaidis@gmail.com",
+      "username": "stevaidis234",
+      "encryptSalt": "523a44d71baf1a47d39fc11d012963d1",
+      "authSalt": "ea7ab4104c5734d70cd63e39329faf0b",
+      "authProof": "73543f8bdef8c034664b39637a10d9c25a9b20ebcf1676dc1eada970a5ee"
     },
     {
-      "id": 2,
-      "username": "ste",
-      "password": "1111",
-      "role": "user",
-      "email": "xxx@yyy.zzz567890ABCDccccccccccccc"
+      "email": "ste.vaidis@gmail.com",
+      "username": "stevaidis",
+      "encryptSalt": "ae1f746db3d3fc63180657478abf31fa",
+      "authSalt": "d0c25c4b87dff44d34f6e2fb30fb78bd",
+      "authProof": "470de88be99d1493182cb79ce3b802dcf57b763acdda52fbc73d37689bae3b17507babb47fc0ffdeb7bc860a4c72f85bb62c1d14e1d8c0c9b2ea379e26be3a95"
+    },
+    {
+      "email": "ste.vaidis@gmail.com",
+      "username": "stevaidiseee",
+      "encryptSalt": "09f4f5266995ff0ca5bd9b76e2041ea7",
+      "authSalt": "7a9e56831d12205ea2c0633cc941992b",
+      "authProof": "f0e1b272607c90c843141d3292ab2f6c45a5e31c024d39e58d216ec28e5f505b57ebda3591b0485f46b9ddc7be00466cd6fd9fe4a2ba63d0bae5d03c7fe1f6b3"
     }
   ]
 }

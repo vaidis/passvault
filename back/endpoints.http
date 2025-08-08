@@ -1,0 +1,17 @@
+### get user
+GET http://localhost:3001/auth/user
+
+###
+
+### post register
+POST http://localhost:3001/auth/register/abc123
+Content-Type: application/json
+
+{
+  "email": "ste.vaidis@gmail.com",
+  "username": "stevaidis234",
+  "encryptSalt": "523a44d71baf1a47d39fc11d012963d1",
+  "authSalt": "ea7ab4104c5734d70cd63e39329faf0b",
+  "authProof": "73543f8bdef8c034664b39637a10d9c25a9b20ebcf1676dc1eada970a5ee"
+}
+
