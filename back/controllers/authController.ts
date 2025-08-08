@@ -35,7 +35,9 @@ const register = async (req: Request, res: Response): Promise<void> => {
     return;
   }
 
-  console.log('register id founded')
+  console.log('authController.ts register id founded')
+  console.log('authController.ts typeof req.body', typeof req.body)
+  console.log('authController.ts typeof body', req.body)
   try {
     // First, ensure we have a valid body object
     if (!req.body || typeof req.body !== 'object') {
@@ -339,5 +341,17 @@ const logout = async (req: Request, res: Response): Promise<void> => {
   }
 }
 
-export { login, refresh, register, user, logout };
+//
+// /auth/user
+//
+//const user = async (res: Response): Promise<void> => {
+//  console.log('user:')
+//  try {
+//    res.status(200).json({ success: true, message: 'User function executed' });
+//  } catch (error) {
+//    res.status(500).json({ error: 'Internal server error' });
+//  }
+//}
+
+export { login, refresh, register, logout, user };
 

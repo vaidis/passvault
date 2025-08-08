@@ -2,80 +2,24 @@
   "users": [
     {
       "email": "ste.vaidis@gmail.com",
-      "username": "stevaidis",
-      "encryptSalt": "e63fe3d9a9cedf803dd0af207575c04e",
-      "authSalt": "17ffdc3925162df96dbf143bc14b7f0b",
-      "authProof": "ff62fa5b7b012314ce3c76d4045495ff62e23a25ff3e1cfec22576ccde4c6e3e39aedec4c7110c1584edc674695924c58a3c5769240b93e92116043d56b3c2b3"
-    },
-    {
-      "email": "ste.vaidis2@gmail.com",
-      "username": "stevaidis2222222",
-      "encryptSalt": "e2f5b90bf0054b8bafd4dc1d1e79e224",
-      "authSalt": "13cfe5af4a46d8aca8466eb515a855a2",
-      "authProof": "bfefa6b075304183462bb0f72df82c17d770583071920a778f172b94e3cb67010197633b5d80ecee1575fe8db1a9047c7c02894198f6a3fb6cc094497f7c945b"
+      "username": "stevaidis234",
+      "encryptSalt": "523a44d71baf1a47d39fc11d012963d1",
+      "authSalt": "ea7ab4104c5734d70cd63e39329faf0b",
+      "authProof": "73543f8bdef8c034664b39637a10d9c25a9b20ebcf1676dc1eada970a5ee"
     },
     {
       "email": "ste.vaidis@gmail.com",
       "username": "stevaidis",
-      "encryptSalt": "959c5e11783aba895674c291fbf7bd8c",
-      "authSalt": "1551d0274f26ebfb5e104f2ca78c5a2d",
-      "authProof": "1c3e226ac5af475cce42d6cc9f05e2d636b099df891ac4628f1ede50e0be93876ce1c91a7f1b610dd07be487a2fb05883655bc42624f0bbba2caea705abcee48"
+      "encryptSalt": "ae1f746db3d3fc63180657478abf31fa",
+      "authSalt": "d0c25c4b87dff44d34f6e2fb30fb78bd",
+      "authProof": "470de88be99d1493182cb79ce3b802dcf57b763acdda52fbc73d37689bae3b17507babb47fc0ffdeb7bc860a4c72f85bb62c1d14e1d8c0c9b2ea379e26be3a95"
     },
     {
       "email": "ste.vaidis@gmail.com",
-      "username": "stevaidis",
-      "encryptSalt": "0a43087a935250e4e9d871c3a4f0ddea",
-      "authSalt": "c3f15bbd349f91e10a0a5afb80cef6fb",
-      "authProof": "e8c92cce7847028159dd8940ab1d24a68b10e36aad4a7b8a3b138aeef2853041061c6b0a10cc8c11387c7d3d69cd1236e6331b09df444e7cd96a8d49f2eca2d7"
-    },
-    {
-      "email": "ste.vaidis@gmail.com",
-      "username": "stevaidis",
-      "encryptSalt": "fbf8e17a4213fbbc0eb93748befdf52a",
-      "authSalt": "81e6bd96b01c316e5ac5328d6cc70604",
-      "authProof": "4af0449973b6fbe25c7926ccbaafd9d517e1e165935dbec7e362ac8dc2880bc9353b46f80f5185e2c1849a005d8aaade38c003693a12a323eaf4902168ffa317"
-    },
-    {
-      "email": "ste.vaidis@gmail.com",
-      "username": "stevaidis",
-      "encryptSalt": "a5ef41ec1f36be342ae3cdbdbc9152eb",
-      "authSalt": "dfec927d8cc229c84ed9dc08b4659672",
-      "authProof": "e00f87ec4ce2f5aa16c3925ce92eacebe6fc48d41aafac75f9ca4b30cd828c5d5a5d0ae70ad30e28e6304116ad4be3822536a04161cc50cc969f68f309c19c5b"
-    },
-    {
-      "email": "ste.vaidis@gmail.com",
-      "username": "stevaidis",
-      "encryptSalt": "54015b547daa29bf6ca38c2d05e3f26c",
-      "authSalt": "59613ce89e8d240ea9c6d9337c5eb9c9",
-      "authProof": "ad704205ac0403d81a3dc4a2d263b93fb647d2352686235348b07934030c8ba34033e502de9182dca9601dc805625027e1d698d37f8c5dad6e544875f6a260ee"
-    },
-    {
-      "email": "ste.vaidis@gmail.com",
-      "username": "stevaidis",
-      "encryptSalt": "39b3cd0b71acecbde2506526dd66f0ff",
-      "authSalt": "fd34ed5e7eb7c5f4ba2cc5024309d8ba",
-      "authProof": "ae1d3fcc9da5bf9be635df4dea444f7b8de0b5d02aea6d07eaf335bcae16f10e1a24fe9293a9dce3b520799487d412a27301a9cd621d6de17167ae891e026192"
-    },
-    {
-      "email": "ste.vaidis@gmail.com",
-      "username": "stevaidis",
-      "encryptSalt": "9367da0402d24a02064bbf669bc0a3c3",
-      "authSalt": "49ff9322b76d7b45fa3dce319877b8cc",
-      "authProof": "3c9cfdd1af9c002d353cf5c13837d6de3b0e9f24f7949513d54ca92fda4da3d386beebb5fa967c955223e1529929d4216920b8d66563b3a681922d583812f193"
-    },
-    {
-      "email": "ste.vaidis@gmail.com",
-      "username": "stevaidis",
-      "encryptSalt": "90de8126b4322c9b549b415eddb0f7f2",
-      "authSalt": "fba7bcfe9c54e42b441637b0977c1bc3",
-      "authProof": "2f4d883e364b19d2997c39c0fbaa0673cd2817605fc9759fc90f967f3ea1712ddee88a0c53e617b81ffdcff3490abf5044ade4a36f6a76f064c57861318bfe6d"
-    },
-    {
-      "email": "ste.vaidis@gmail.com",
-      "username": "stevaidis",
-      "encryptSalt": "ec9f2438a80af533232d49863009cab1",
-      "authSalt": "980d2a2270f4f8b68f197cdce806f7ce",
-      "authProof": "4adb4f99515dee0587e174d0efddad69eeef2ca994b7ef3d5c38a91a5266cfbcc2251e18a98e36ecccb78419ab439a8c8288ac423a5be18a5004a6bc7996d053"
+      "username": "stevaidiseee",
+      "encryptSalt": "09f4f5266995ff0ca5bd9b76e2041ea7",
+      "authSalt": "7a9e56831d12205ea2c0633cc941992b",
+      "authProof": "f0e1b272607c90c843141d3292ab2f6c45a5e31c024d39e58d216ec28e5f505b57ebda3591b0485f46b9ddc7be00466cd6fd9fe4a2ba63d0bae5d03c7fe1f6b3"
     }
   ]
 }

@@ -1,3 +1,28 @@
+export type ApiResponse<T = never> =
+  | { success: true; data: T }
+  | { success: false; message: string };
+
+export interface ApiError {
+    message: string;
+    status: number;
+    errors?: Record<string, string[]>;
+}
+
+export interface RegisterRequest {
+  email: string;
+  username: string;
+  authSalt: string;
+  authProof: string;
+  encryptSalt: string;
+}
+
+export interface RegisterResponse {
+  success: boolean;
+  message: string;
+}
+
+
+
 export interface LoginRequest {
   email: string;
   password: string;
@@ -7,14 +32,6 @@ export interface LoginResponse {
   token: string;
   user: User;
 }
-
-export interface RegisterRequest {
-  email: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-}
-
 export interface User {
   id: string;
   email: string;
@@ -30,4 +47,3 @@ export interface DataItem {
   value: number;
   createdAt: string;
 }
-

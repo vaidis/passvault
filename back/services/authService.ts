@@ -70,6 +70,7 @@ export type RegisterResult = {
 }
 
 export async function getRegisterId(id: string): Promise<Boolean> {
+  console.log('🐞 authService.ts > registeredId');
   try {
     // get the user
     const db = await getRegisterDB();

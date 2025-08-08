@@ -29,6 +29,7 @@ app.use(cors({
 app.use(limiter)
 app.use(helmet());
 app.use(cookieParser());
+//app.use(express.json());
 app.use(bodyParser.json());
 
 // Routes

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import * as CryptoJS from "crypto-js";
 import {useParams, useNavigate } from 'react-router';
+import {authApi} from '../../api/auth'
 
 type FormData = {
   email: string;
@@ -30,6 +31,7 @@ const Register: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [redirectCountdown, setRedirectCountdown] = useState<number | null>(null);
 
+  // redirect after a while after showing the success message
   React.useEffect(() => {
     if (redirectCountdown === null) return;
     if (redirectCountdown <= 0) {
@@ -79,25 +81,17 @@ const Register: React.FC = () => {
     };
 
     try {
-      const response = await fetch(
-        `http://localhost:3001/auth/register/${registerId}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body),
-        }
-      );
+      const response = await authApi.register(body);
+      console.log('register response:', response)
 
-      const data: RegisterResponse = await response.json();
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Registration failed.");
+      if (!response.success) {
+        throw new Error(response.message || "Registration failed.");
       }
 
-      setSuccessMessage(data.message || "Registration successful!");
+      setSuccessMessage("Registration successful!");
       setFormData(initialFormData);
       setRedirectCountdown(3);
+
     } catch (err: any) {
       setError(err.message);
     } finally {
