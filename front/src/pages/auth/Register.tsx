@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import * as CryptoJS from "crypto-js";
-import {useParams, useNavigate } from 'react-router';
+import {useNavigate } from 'react-router';
 import {authApi} from '../../api/auth'
 
 type FormData = {
@@ -8,10 +8,6 @@ type FormData = {
   username: string;
   password: string;
   confirmPassword: string;
-};
-
-type RegisterResponse = {
-  message: string;
 };
 
 const initialFormData: FormData = {
@@ -22,18 +18,18 @@ const initialFormData: FormData = {
 };
 
 const Register: React.FC = () => {
-  const { registerId } = useParams<{ registerId: string }>();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState<FormData>(initialFormData);
-  const [error, setError] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [redirectCountdown, setRedirectCountdown] = useState<number | null>(null);
 
-  // redirect after a while after showing the success message
+  // redirect after a while, after showing the success message
   React.useEffect(() => {
     if (redirectCountdown === null) return;
+
     if (redirectCountdown <= 0) {
       navigate("/auth/login");
       return;
@@ -46,25 +42,33 @@ const Register: React.FC = () => {
     return () => clearTimeout(timer);
   }, [redirectCountdown, navigate]);
 
+  // insert allowed characters into fields
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (/^[\x21-\x7E]*$/.test(value)) {
+      setErrorMessage('');
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    } else {
+      setErrorMessage('Wrong character. Only printable characters allowed')
+    }
   };
 
+  // submit user registation data
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
+    setErrorMessage(null);
     setSuccessMessage(null);
 
     const { email, username, password, confirmPassword } = formData;
 
     if (password !== confirmPassword) {
-      setError("Passwords do not match.");
+      setErrorMessage("Passwords do not match.");
       return;
     }
 
     setIsSubmitting(true);
 
+    // use password only to create salt strings
     const authSalt = CryptoJS.lib.WordArray.random(128 / 8).toString();
     const encryptSalt = CryptoJS.lib.WordArray.random(128 / 8).toString();
     const authProof = CryptoJS.PBKDF2("Secret Passphrase", authSalt, {
@@ -93,17 +97,15 @@ const Register: React.FC = () => {
       setRedirectCountdown(3);
 
     } catch (err: any) {
-      setError(err.message);
+      setErrorMessage(err.message);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-
   return (
     <form onSubmit={handleSubmit} style={{ maxWidth: 400, margin: "0 auto" }}>
       <h2>User Registration</h2>
-
       {["email", "username", "password", "confirmPassword"].map((field) => (
         <div key={field} style={{ marginBottom: "1em" }}>
           <label>
@@ -121,13 +123,10 @@ const Register: React.FC = () => {
           </label>
         </div>
       ))}
-
       <button type="submit" disabled={isSubmitting}>
         {isSubmitting ? "Registering..." : "Register"}
       </button>
-
-      {error && <p style={{ color: "red" }}>{error}</p>}
-
+      {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
       {successMessage && (
         <p style={{ color: "green" }}>
           {successMessage}
