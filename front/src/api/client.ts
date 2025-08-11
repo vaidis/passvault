@@ -1,5 +1,8 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
-//import type { ApiResponse, ApiError } from './types'
+import type { ApiResponse, TResponse, ApiError } from './types'
+
+
+
 
 // Helper function to get auth headers
 const getAuthHeaders = (): Record<string, string> => {
@@ -8,47 +11,49 @@ const getAuthHeaders = (): Record<string, string> => {
   return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
-async function apiRequest<T>(
+
+
+
+async function apiRequest<TResponse>(
   endpoint: string,
   options: RequestInit = {}
-): Promise<T> {
+): Promise<ApiResponse<TResponse>> {
   try {
     console.log(' 🔗 apiRequest endpoint:', endpoint);
     console.log(' 🔗 apiRequest options:', options);
-
     const config: RequestInit = {
       headers: {
         'Content-Type': 'application/json',
         ...getAuthHeaders(),
-        ...options.headers,
+        ...(options.headers ?? {}),
       },
       ...options,
     };
 
     const url = `${API_BASE_URL}${endpoint}`;
-    console.log('apiRequest url:', url);
-
     const response = await fetch(url, config);
-    const json = await response.json();
+    const json = (await response.json()) as unknown;
+
+    console.log('apiRequest url:', url);
     console.log('apiRequest response > json:', json);
 
-    if (!response.success) {
-      throw new Error(json?.message || 'API request failed');
+    if (!response.ok) {
+      const message =
+        (json as any)?.message ||
+        (json as any)?.error?.message ||
+        `Request failed with status ${response.status}`;
+      return { success: false, error: { message } };
     }
 
-    return json as T;
+    return json as ApiResponse<TResponse>;
   } catch (error) {
     let message = 'Unknown error';
-    if (error instanceof Error) {
-      message = error.message;
-    }
-
-    return {
-      success: false,
-      message,
-    } as T;
+    if (error instanceof Error) message = error.message;
+      return { success: false, error: { message } };
   }
 }
+
+
 
 
 
@@ -57,17 +62,32 @@ async function apiRequest<T>(
 export const get = <T>(endpoint: string): Promise<T> =>
   apiRequest<T>(endpoint, { method: 'GET' });
 
-export const post = <ApiResponse, TData = Record<string, unknown>>(
+// working for register
+
+// export const post = <ApiResponse, TData = Record<string, unknown>>(
+//   endpoint: string,
+//   data: TData
+// ): Promise<ApiResponse> => {
+//   console.log(' 🔗 client.ts post endpoint:', endpoint)
+//   console.log(' 🔗 client.ts post data:', data)
+//   return apiRequest<ApiResponse>(endpoint, {
+//     method: 'POST',
+//     body: data ? JSON.stringify(data) : undefined,
+//   });
+// }
+
+
+
+export const post = async <TReq, TRes>(
   endpoint: string,
-  data: TData
-): Promise<ApiResponse> => {
-  console.log(' 🔗 client.ts post endpoint:', endpoint)
-  console.log(' 🔗 client.ts post data:', data)
-  return apiRequest<ApiResponse>(endpoint, {
-    method: 'POST',
-    body: data ? JSON.stringify(data) : undefined,
+  data: TReq
+): Promise<ApiResponse<TRes>> => {
+  return apiRequest<TRes>(endpoint, {
+    method: "POST",
+    body: JSON.stringify(data),
   });
-}
+};
+
 
 //export const post = <TResponse, TData = Record<string, unknown>>(
 //  endpoint: string,

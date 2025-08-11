@@ -7,6 +7,7 @@ import {
   verifyRefreshToken
 } from '../jwtTokens';
 import * as AuthService from '../services/authService';
+import { getUserDB, getRegisterDB } from '../utils/getDatabase';
 
 //
 // POST /auth/register
@@ -135,6 +136,105 @@ const register = async (req: Request, res: Response): Promise<void> => {
     return;
   }
 }
+
+
+
+
+
+
+
+
+
+
+//
+// POST /auth/login/username
+//
+const loginUsername = async (
+  req: Request, res: Response
+): Promise<void> => {
+  const username = req.body.username;
+
+  // get the user
+  const db = await getUserDB();
+  const userData = db.data.users.find((u) => u.username === username);
+
+  // Check if the user exists
+  if (!userData || !userData.authSalt) {
+    console.log('🐞 authService.ts > authenticateUser(): user not found');
+    res.json({
+      success: false,
+      error: {
+        message: 'Error: Username does not exist'
+      }
+    });
+    return;
+  }
+
+  const authSalt = userData.authSalt; //  ERROR: 'userData' is possibly 'undefined'.
+  console.log('authController > loginUsername > username:', username);
+  console.log('authController > loginUsernane > authSalt:', authSalt);
+  res.json({
+    success: true,
+    data: {
+      authSalt: authSalt,
+    }
+  });
+}
+
+//
+// POST /auth/login/authproof
+//
+const loginAuthproof = async (req: Request, res: Response): Promise<void> => {
+  // what the frondend send
+  const username = req.body.username;
+  const authProof = req.body.authProof;
+
+  // get the user
+  const db = await getUserDB();
+  const userData = db.data.users.find((u) => u.username === username);
+
+  // Check if the user exists
+  if (!userData || !userData.authProof) {
+    console.log('🐞 authService.ts > authenticateUser(): user not found');
+    res.json({
+      success: false,
+      error: {
+        message: 'Error: Username or authProof does not exist'
+      }
+    });
+    return;
+  }
+
+  // if dont match its wrong password
+  if (authProof !== userData.authProof) {
+    console.log('🐞 authService.ts > authenticateUser(): authProof does not match');
+    res.json({
+      success: false,
+      error: {
+        message: 'Error: authProof does not match'
+      }
+    });
+    return;
+  }
+
+  console.log('authController > loginAuthproof > encryptSalt:', userData.encryptSalt)
+
+  res.json({
+    success: true,
+    data: {
+      encryptSalt: userData.encryptSalt,
+    }
+  });
+}
+
+
+
+
+
+
+
+
+
 
 //
 // POST /auth/login
@@ -353,5 +453,5 @@ const logout = async (req: Request, res: Response): Promise<void> => {
 //  }
 //}
 
-export { login, refresh, register, logout, user };
+export { login, loginUsername, loginAuthproof, refresh, register, logout, user };
 

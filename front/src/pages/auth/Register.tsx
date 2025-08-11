@@ -71,7 +71,7 @@ const Register: React.FC = () => {
     // use password only to create salt strings
     const authSalt = CryptoJS.lib.WordArray.random(128 / 8).toString();
     const encryptSalt = CryptoJS.lib.WordArray.random(128 / 8).toString();
-    const authProof = CryptoJS.PBKDF2("Secret Passphrase", authSalt, {
+    const authProof = CryptoJS.PBKDF2(password, authSalt, {
       keySize: 512 / 32,
       iterations: 10000
     }).toString(CryptoJS.enc.Hex);
@@ -83,6 +83,8 @@ const Register: React.FC = () => {
       authSalt,
       authProof,
     };
+
+    console.log('register request body:', body)
 
     try {
       const response = await authApi.register(body);
