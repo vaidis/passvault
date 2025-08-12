@@ -1,11 +1,13 @@
 {
   "users": [
     {
+      "id": "6293bcd3-44a0-4bbd-b052-c0e1163132ff",
+      "createdAt": "2025-08-12T08:51:21.356Z",
       "email": "ste.vaidis@gmail.com",
       "username": "stevaidis",
-      "encryptSalt": "f814ff705456e185c8d6d9e2d205f38d",
-      "authSalt": "6990c5110103e5821972f8cb9a74245a",
-      "authProof": "362e35bb10a65cbdf09673d6ce434855263b39b53333d306296897d92cb5a8e30df00d3452108d7c5cde5386af7a919c0971417465cf1291c94ca3a4d85d427d"
+      "encryptSalt": "33f3f3a286037932c52807fdf1d9d592",
+      "authSalt": "12234e6a637ffac58ac21418c06387b2",
+      "verifierK": "07ecca0e18b1f2d362d11d6440d92760934feea2c8dfa497c0104280fada4982639bd65c3bb6effab2c2cccaadfee995835a1ae584875f267fdc3024f7340a2c"
     }
   ]
 }

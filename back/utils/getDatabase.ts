@@ -19,7 +19,7 @@ export interface User {
     username: string;
     encryptSalt: string;
     authSalt: string;
-    authProof: string;
+    verifierK: string;
 }
 
 export interface Users {
@@ -47,11 +47,15 @@ export async function getDataDB(username:string) {
 }
 
 export async function getUserDB() {
+  console.log('🐞 getDatabase.ts > getUserDB');
   const dbPath = 'db/users.db.json';
   const defaultData: Users = { users: [] };
   const adapter = new JSONFile<Users>(dbPath);
+  console.log('🐞 getDatabase.ts > getUserDB > adapter :', adapter );
   const db = new Low<Users>(adapter, defaultData);
+  console.log('🐞 getDatabase.ts > getUserDB > db:', db);
   await db.read();
+  console.log('🐞 getDatabase.ts > getUserDB > db:', db);
   return db;
 }
 

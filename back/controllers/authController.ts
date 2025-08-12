@@ -9,6 +9,8 @@ import {
 import * as AuthService from '../services/authService';
 import { getUserDB, getRegisterDB } from '../utils/getDatabase';
 
+
+
 //
 // POST /auth/register
 //
@@ -19,7 +21,7 @@ const register = async (req: Request, res: Response): Promise<void> => {
   try {
     const registerId = req.params.registerId;
     const isRegisterIdExist = await AuthService.getRegisterId(registerId);
-    console.log('🐞 authController.ts > register() isRegisterIdExist:', isRegisterIdExist);
+    //console.log('🐞 authController.ts > register() isRegisterIdExist:', isRegisterIdExist);
 
     if (!isRegisterIdExist) {
       res.status(500).json({
@@ -36,11 +38,13 @@ const register = async (req: Request, res: Response): Promise<void> => {
     return;
   }
 
-  console.log('authController.ts register id founded')
-  console.log('authController.ts typeof req.body', typeof req.body)
-  console.log('authController.ts typeof body', req.body)
+  //console.log('authController.ts register id founded')
+  //console.log('authController.ts typeof req.body', typeof req.body)
+  //console.log('authController.ts typeof body', req.body)
+
+  // Validation
   try {
-    // First, ensure we have a valid body object
+    // Check: object body
     if (!req.body || typeof req.body !== 'object') {
       res.status(400).json({
         success: false,
@@ -54,9 +58,9 @@ const register = async (req: Request, res: Response): Promise<void> => {
     let username: string = req.body.username;
     let encryptSalt: string = req.body.encryptSalt;
     let authSalt: string = req.body.authSalt;
-    let authProof: string = req.body.authProof;
+    let verifierK: string = req.body.verifierK;
 
-    // String type checking
+    // Check: String mail type
     if ( typeof email !== 'string' ) {
       res.status(400).json({
         success: false,
@@ -65,6 +69,7 @@ const register = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
+    // Check: String username type
     if ( typeof username !== 'string' ) {
       res.status(400).json({
         success: false,
@@ -73,10 +78,11 @@ const register = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
+    // Check: String salts type
     if (
       typeof encryptSalt !== 'string' ||
       typeof authSalt !== 'string' ||
-      typeof authProof !== 'string'
+      typeof verifierK !== 'string'
     ) {
       res.status(400).json({
         success: false,
@@ -90,24 +96,7 @@ const register = async (req: Request, res: Response): Promise<void> => {
     username = username.trim();
     encryptSalt = encryptSalt.trim();
     authSalt = authSalt.trim();
-    authProof = authProof.trim();
-
-    // Check if username and password are both provided
-    if (
-      !email ||
-      !username ||
-      !encryptSalt ||
-      !authSalt ||
-      !authProof
-    ) {
-      res.status(401).json({
-        success: false,
-        message: 'Registration data missing',
-      });
-      return;
-    }
-
-    const registerData = {email, username, encryptSalt, authSalt, authProof};
+    verifierK = verifierK.trim();
 
     // check if username exist
     const userExist = await AuthService.isUserExist(username)
@@ -119,13 +108,14 @@ const register = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const isUserRegistered = await AuthService.registerUser(registerData);
-    //console.log('🐞 authController.ts > register(): isUserRegistered:', isUserRegistered);
+    // Store new user
+    const registerData = {email, username, encryptSalt, authSalt, verifierK};
+    const uid = await AuthService.registerUser(registerData);
 
     // respond successfully
     res.status(200).json({
       success: true,
-      message: `User ${username} has been registered. Redirecting to login.`,
+      message: `User ${username} with ${uid} has been registered. Redirecting to login.`,
     });
   } catch (error) {
     //console.log('🐞 authController.ts > register(): error:', error);
@@ -187,31 +177,31 @@ const loginUsername = async (
 const loginAuthproof = async (req: Request, res: Response): Promise<void> => {
   // what the frondend send
   const username = req.body.username;
-  const authProof = req.body.authProof;
+  const verifierK = req.body.verifierK;
 
   // get the user
   const db = await getUserDB();
   const userData = db.data.users.find((u) => u.username === username);
 
   // Check if the user exists
-  if (!userData || !userData.authProof) {
+  if (!userData || !userData.verifierK) {
     console.log('🐞 authService.ts > authenticateUser(): user not found');
     res.json({
       success: false,
       error: {
-        message: 'Error: Username or authProof does not exist'
+        message: 'Error: Username or verifierK does not exist'
       }
     });
     return;
   }
 
   // if dont match its wrong password
-  if (authProof !== userData.authProof) {
-    console.log('🐞 authService.ts > authenticateUser(): authProof does not match');
+  if (verifierK !== userData.verifierK) {
+    console.log('🐞 authService.ts > authenticateUser(): verifierK does not match');
     res.json({
       success: false,
       error: {
-        message: 'Error: authProof does not match'
+        message: 'Error: verifierK does not match'
       }
     });
     return;

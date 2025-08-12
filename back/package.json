@@ -5,7 +5,7 @@
   "scripts": {
     "test": "export $(cat .env | xargs) && NODE_OPTIONS=--experimental-vm-modules DEBUG=jest jest --verbose=false --forceExit --colors --runInBand  --detectOpenHandles --silent=false",
     "test2": "export $(cat .env | xargs) && NODE_OPTIONS=--experimental-vm-modules jest --watch --verbose=false --colors --runInBand  --detectOpenHandles --silent=false",
-    "dev": "export $(cat .env | xargs) && nodemon --watch './' --ext ts --exec 'tsx --trace-warnings' index.ts"
+    "dev": "export $(cat .env | xargs) && nodemon --watch './' --ext ts --exec 'tsx --trace-warnings' --delay 200ms index.ts"
   },
   "keywords": [],
   "type": "commonjs",

@@ -38,9 +38,24 @@ app.use('/data', dataRouter);
 app.use('/user', userRouter);
 
 // App
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
 
 export default app;
 
+process.on("SIGTERM", () => {
+  console.log("📦 Closing server...");
+  server.close(() => {
+    console.log("Server closed");
+    process.exit(0);
+  });
+});
+
+process.on("SIGINT", () => {
+  console.log("📦 Closing server...");
+  server.close(() => {
+    console.log("Server closed");
+    process.exit(0);
+  });
+});

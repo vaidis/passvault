@@ -7,6 +7,8 @@ import type {
   LoginUsernameResponse,
   LoginAuthproofRequest,
   LoginFinalResponse,
+  RegisterData,
+  RegisterResponse,
 } from "./types";
 
 // import type {
@@ -44,8 +46,8 @@ const endpoint = {
   //}
 
 export const authApi = {
-  register: async (userData: RegisterRequest): Promise<ApiResponse<RegisterResponse>> => {
-    return apiClient.post<ApiResponse<RegisterResponse>, RegisterRequest>(endpoint.register, userData);
+  register: async (userData: RegisterData): Promise<ApiResponse<RegisterResponse>> => {
+    return apiClient.post<RegisterData, RegisterResponse >(endpoint.register, userData);
   },
   // console.log('auth.ts > username:', credentials.username);
   // console.log('auth.ts > password:', credentials.password);

@@ -81,11 +81,11 @@ export type LoginFinalResponse = {
 
 
 // register
-export interface RegisterRequest {
+export interface RegisterData {
   email: string;
   username: string;
   authSalt: string;
-  authProof: string;
+  verifierK: string;
   encryptSalt: string;
 }
 
