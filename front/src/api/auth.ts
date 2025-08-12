@@ -3,10 +3,10 @@ import * as CryptoJS from "crypto-js";
 import type {
   ApiResponse,
   LoginCredentials,
-  LoginUsernameRequest,
-  LoginUsernameResponse,
-  LoginAuthproofRequest,
-  LoginFinalResponse,
+  LoginStartRequest,
+  LoginStartResponse,
+  LoginFinishRequest,
+  LoginFinishResponse,
   RegisterData,
   RegisterResponse,
 } from "./types";
@@ -31,8 +31,8 @@ const registerId = getLastUrlSegment();
 const endpoint = {
   register: `/auth/register/${registerId}`,
   login: '/auth/login',
-  loginUsername: "/auth/login/username",
-  loginAuthproof: "/auth/login/authproof",
+  loginStart: "/auth/login/start",
+  loginFinish: "/auth/login/finish",
   logout: '/auth/logout',
   refresh: '/auth/refresh'
 }
@@ -46,41 +46,58 @@ const endpoint = {
   //}
 
 export const authApi = {
+  //
+  // Register
+  //
   register: async (userData: RegisterData): Promise<ApiResponse<RegisterResponse>> => {
     return apiClient.post<RegisterData, RegisterResponse >(endpoint.register, userData);
   },
-  // console.log('auth.ts > username:', credentials.username);
-  // console.log('auth.ts > password:', credentials.password);
 
-  login: async (credentials: LoginCredentials): Promise<ApiResponse<LoginFinalResponse>> => {
-    const authSaltResponse = await apiClient.post<
-      LoginUsernameRequest,
-      LoginUsernameResponse
-    >(endpoint.loginUsername, { username: credentials.username });
+  //
+  // Login
+  //
+  login: async (credentials: LoginCredentials): Promise<ApiResponse<LoginFinishResponse>> => {
+    // send username to get authSalt, challengeId, challenge
+    const startRequest = {username: credentials.username};
+    const startResponse = await apiClient.post<LoginStartRequest,LoginStartResponse>(
+      endpoint.loginStart, startRequest
+    );
+    console.log(' 🍓 authApi > login > startRequest:', startRequest);
+    console.log(' 🍓 authApi > login > startResponse:', startResponse);
 
-    if (!authSaltResponse.success) {
-      return authSaltResponse; // propagate failure
+    // chekc if username exist
+    if (!startResponse.success) {
+      return startResponse;
     }
 
-    const authProof = CryptoJS.PBKDF2(
-      credentials.password,
-      authSaltResponse.data.authSalt,
-      { keySize: 512 / 32, iterations: 10000 }
-    ).toString(CryptoJS.enc.Hex);
-
-    console.log('auth.ts > password:', credentials.password);
-    console.log('auth.ts > username:', credentials.username);
-    console.log('auth.ts > authSaltResponse.data.authSalt:', authSaltResponse.data.authSalt);
-    console.log('auth.ts > authProof:', authProof);
-
-    const authProofResponse = await apiClient.post<
-      LoginAuthproofRequest,
-      LoginFinalResponse
-    >(endpoint.loginAuthproof, { username:credentials.username, authProof:authProof });
-
-    return authProofResponse; // μπορεί να είναι success ή failure
+    // repare the final request
+    const { authSalt, challengeId, challenge } = startResponse.data;
+    const authSaltWA = CryptoJS.enc.Hex.parse(authSalt);
+    const Khex = CryptoJS.PBKDF2(credentials.password, authSaltWA, {
+      keySize: 512 / 32,
+      iterations: 10000,
+    }).toString(CryptoJS.enc.Hex);
+    const challengeWA = CryptoJS.enc.Hex.parse(challenge);
+    const Kwa = CryptoJS.enc.Hex.parse(Khex);
+    const proofHex = CryptoJS.HmacSHA256(challengeWA, Kwa).toString(CryptoJS.enc.Hex);
+    const finishRequest = {
+      challengeId: challengeId,
+      proof: proofHex,
+      username: credentials.username,
+    }
+    
+    // send proof to get encrypt salt
+    const finishResponse = await apiClient.post<LoginFinishRequest, LoginFinishResponse>(
+      endpoint.loginFinish, finishRequest
+    );
+    console.log(' 🍓 auth.ts > login > responseFinish:', finishRequest);
+    console.log(' 🍓 auth.ts > login > finishResponse:', finishResponse);
+    return finishResponse;
   },
 
+  //
+  // Logout
+  //
   //logout: async (): Promise<ApiResponse<null>> => {
   //  return apiClient.post<ApiResponse<null>>(endpoint.logout);
   //},

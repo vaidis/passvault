@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-// import * as CryptoJS from "crypto-js";
 // import {useNavigate } from 'react-router';
 import {authApi} from '../../api/auth'
 import type { ApiResponse, LoginFinalResponse } from "../../api/types";
@@ -50,29 +49,22 @@ const Login: React.FC = () => {
     }
   };
 
-
-  // send authProof - get encrypted data
-
-
-  // 1. send username
-  // 2. get encryptSalt & authSalt
-  // 3. user password & authSalt to create authProof
-  // 4. send authProof
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage("");
     setSuccessMessage("");
     setIsSubmitting(true);
 
-    //const { username, password } = formData;
-
     try {
-      // const response =  await authApi.login(formData);
       const response: ApiResponse<LoginFinalResponse> = await authApi.login(formData);
 
+
       if (response.success) {
-        const encryptSalt: string = response.data.encryptSalt;
-        console.log('authSalt', encryptSalt);
+        const encryptSalt = response.data.encryptSalt;
+        // const accessToken = response.data.accessToken;
+        // localStorage.setItem("authToken", accessToken);
+        console.log("encryptSalt", encryptSalt);
+        // redirect / UI update...
       } else {
         setErrorMessage(response.error.message);
       }

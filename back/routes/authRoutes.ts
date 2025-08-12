@@ -1,10 +1,10 @@
 import express from 'express';
-import { loginUsername, loginAuthproof, refresh, register, logout, user } from '../controllers/authController';
+import { loginStart, loginFinish, refresh, register, logout, user } from '../controllers/authController';
 
 const router = express.Router();
 
-router.post('/login/username', loginUsername);
-router.post('/login/authproof', loginAuthproof);
+router.post('/login/start', loginStart);
+router.post('/login/finish', loginFinish);
 router.post('/refresh', refresh);
 router.post('/register/:registerId/', register);
 router.get('/user', user);

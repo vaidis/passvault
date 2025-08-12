@@ -9,22 +9,25 @@ export type LoginCredentials = {
   password: string;
 };
 
-export type LoginUsernameRequest = {
+export type LoginStartRequest = {
   username: string;
 };
 
-export type LoginUsernameResponse = {
+export type LoginStartResponse = {
   authSalt: string;
+  challengeId: string;
+  challenge: string;
 };
 
 // Το σώμα που στέλνουμε στο /login/authproof
-export type LoginAuthproofRequest = {
+export type LoginFinishRequest = {
   username: string;
-  authProof: string; // hex
+  proof: string;
+  challengeId: string;
 };
 
 // Τελικό επιτυχές response (όπως στο παράδειγμά σου)
-export type LoginFinalResponse = {
+export type LoginFinishResponse = {
   encryptSalt: string;
 };
 

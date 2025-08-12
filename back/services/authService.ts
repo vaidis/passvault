@@ -1,5 +1,6 @@
 import { JwtPayload } from 'jsonwebtoken';
 import { getUserDB, getRegisterDB } from '../utils/getDatabase';
+import { getAuthDB } from '../db/authDb';
 import {
   generateAccessToken,
   generateRefreshToken,
@@ -97,12 +98,13 @@ export async function getRegisterId(id: string): Promise<Boolean> {
 
     // Check if the user exists
     if (registeredId) {
+      console.log('🐞 authService.ts > getRegisterId(): true');
       return true;
     }
-    console.log('🐞 authService.ts > authenticateUser(): user not found');
+    console.log('🐞 authService.ts > getRegisterId(): false');
     return false;
   } catch (error) {
-    console.log('🐞 authService.ts >getRegisterId(): service error');
+    console.log('🐞 authService.ts > getRegisterId(): service error');
     return false;
   }
 }
@@ -115,7 +117,8 @@ export async function getRegisterId(id: string): Promise<Boolean> {
 export async function registerUser(userData: UserInsert): Promise<string> {
   console.log('🐞 authService.ts > registerUser > userData:', userData);
   try {
-    const db = await getUserDB();
+    //const db = await getUserDB();
+    const db = await getAuthDB();
     console.log('🐞 authService.ts > registerUser: db:', db);
 
     // Check: if user exist
@@ -154,8 +157,10 @@ export async function registerUser(userData: UserInsert): Promise<string> {
 export async function isUserExist(username: string): Promise<Boolean> {
   try {
     // get the user
-    const db = await getUserDB();
+    //const db = await getUserDB();
+    const db = await getAuthDB();
     const user = db.data.users.find((u) => u.username === username);
+    console.log('🐞 authService.ts > isUserExist > user:', user);
 
     // Check if the user exists
     if (user) {
@@ -163,6 +168,7 @@ export async function isUserExist(username: string): Promise<Boolean> {
       return true;
     }
 
+    console.log('🐞 authService.ts > isUserExist: false');
     return false;
   } catch (error) {
     console.log('🐞 authService.ts > isUserExist: error');
@@ -176,7 +182,7 @@ export async function isUserExist(username: string): Promise<Boolean> {
 export async function authenticateUser(username: string, password: string): Promise<AuthResult> {
   try {
     // get the user
-    const db = await getUserDB();
+    const db = await getAuthDB();
     const user = db.data.users.find((u) => u.username === username);
 
     // Check if the user exists

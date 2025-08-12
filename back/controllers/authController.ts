@@ -8,7 +8,10 @@ import {
 } from '../jwtTokens';
 import * as AuthService from '../services/authService';
 import { getUserDB, getRegisterDB } from '../utils/getDatabase';
-
+import { getAuthDB } from '../db/authDb';
+import { timingSafeEqHex, hmacSha256Hex, randomHex } from '../utils/crypto';
+import { getChallenge, isExpired, consumeChallenge } from '../utils/challenge';
+import type { UserRow } from '../db/authDb';
 
 
 //
@@ -37,10 +40,6 @@ const register = async (req: Request, res: Response): Promise<void> => {
     });
     return;
   }
-
-  //console.log('authController.ts register id founded')
-  //console.log('authController.ts typeof req.body', typeof req.body)
-  //console.log('authController.ts typeof body', req.body)
 
   // Validation
   try {
@@ -81,8 +80,8 @@ const register = async (req: Request, res: Response): Promise<void> => {
     // Check: String salts type
     if (
       typeof encryptSalt !== 'string' ||
-      typeof authSalt !== 'string' ||
-      typeof verifierK !== 'string'
+        typeof authSalt !== 'string' ||
+        typeof verifierK !== 'string'
     ) {
       res.status(400).json({
         success: false,
@@ -108,7 +107,7 @@ const register = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    // Store new user
+    // Register the new user
     const registerData = {email, username, encryptSalt, authSalt, verifierK};
     const uid = await AuthService.registerUser(registerData);
 
@@ -132,25 +131,46 @@ const register = async (req: Request, res: Response): Promise<void> => {
 
 
 
+const TTL_MS = 2 * 60 * 1000; // 2 λεπτά
+
+export async function createChallenge(username: string) {
+  const db = await getAuthDB();
+  const id = crypto.randomUUID();
+  const challengeHex = randomHex(32);
+
+  db.data!.challenges.push({
+    id,
+    username,
+    challengeHex,
+    expiresAt: Date.now() + TTL_MS,
+    used: false,
+  });
+  await db.write();
+
+  return { challengeId: id, challengeHex };
+}
+
+
+
 
 
 
 
 //
-// POST /auth/login/username
+// POST /auth/login/start
 //
-const loginUsername = async (
-  req: Request, res: Response
-): Promise<void> => {
+const loginStart = async (  req: Request, res: Response): Promise<void> => {
   const username = req.body.username;
+  console.log('🐞 authService.ts > loginStart > req.body.username:', req.body.username);
 
-  // get the user
-  const db = await getUserDB();
+  // get the user data
+  const db = await getAuthDB();
   const userData = db.data.users.find((u) => u.username === username);
+  console.log('🐞 authService.ts > loginStart > userData', userData);
 
   // Check if the user exists
   if (!userData || !userData.authSalt) {
-    console.log('🐞 authService.ts > authenticateUser(): user not found');
+    console.log('🐞 authService.ts > loginStart > user not found');
     res.json({
       success: false,
       error: {
@@ -160,61 +180,115 @@ const loginUsername = async (
     return;
   }
 
-  const authSalt = userData.authSalt; //  ERROR: 'userData' is possibly 'undefined'.
-  console.log('authController > loginUsername > username:', username);
-  console.log('authController > loginUsernane > authSalt:', authSalt);
+  const { challengeId, challengeHex } = await createChallenge(username);
+  const authSalt = userData.authSalt;
+  const response = {
+    authSalt: authSalt,
+    challengeId: challengeId,
+    challenge: challengeHex
+  };
+
+  console.log('🐞 authService.ts > loginStart > response:', response);
+
   res.json({
     success: true,
-    data: {
-      authSalt: authSalt,
-    }
+    data: response
   });
 }
 
-//
-// POST /auth/login/authproof
-//
-const loginAuthproof = async (req: Request, res: Response): Promise<void> => {
-  // what the frondend send
-  const username = req.body.username;
-  const verifierK = req.body.verifierK;
+async function getUserByUsername(username: string): Promise<UserRow | undefined> {
+  const db = await getAuthDB();
+  const userData = db.data!.users.find((u) => u.username === username);
+  console.log(' 🍒 authController.ts > getUserByUsername > userData:', userData)
+  return userData;
+}
 
-  // get the user
-  const db = await getUserDB();
-  const userData = db.data.users.find((u) => u.username === username);
+//
+// POST /auth/login/finish
+//
+const loginFinish = async (req: Request, res: Response): Promise<void> => {
+  console.log('🍒 authController.ts > loginFinish > req.body:', req.body);
+  const { challengeId, proof, username } = req.body ?? {};
 
-  // Check if the user exists
-  if (!userData || !userData.verifierK) {
-    console.log('🐞 authService.ts > authenticateUser(): user not found');
-    res.json({
-      success: false,
-      error: {
-        message: 'Error: Username or verifierK does not exist'
-      }
-    });
+  // check if fields exist
+  if (!challengeId || !proof) {
+    res.status(400).json({ success: false, error: { message: 'Missing challengeId or proof' } });
     return;
   }
 
-  // if dont match its wrong password
-  if (verifierK !== userData.verifierK) {
-    console.log('🐞 authService.ts > authenticateUser(): verifierK does not match');
-    res.json({
-      success: false,
-      error: {
-        message: 'Error: verifierK does not match'
-      }
-    });
+  // get challenge, contains: { id, username, challengeHex, expiredAt, used}
+  const rec = await getChallenge(challengeId);
+  if (!rec || rec.used || isExpired(rec.expiresAt)) {
+    res.status(400).json({ success: false, error: { message: 'Invalid or expired challenge' } });
     return;
   }
 
-  console.log('authController > loginAuthproof > encryptSalt:', userData.encryptSalt)
+  // get user data, contains: {email, createdAt, username, encryptSalt, authSalt, verifierK}
+  const user = await getUserByUsername(rec.username);
+  if (!user) {
+    res.status(404).json({ success: false, error: { message: 'User not found' } });
+    return;
+  }
 
+  // verifierK = K = PBKDF2(password, authSalt) (hex) from registration
+  const expected = hmacSha256Hex(rec.challengeHex, user.verifierK);
+
+  console.log('🍒 authController.ts > loginFinish > expected', expected);
+
+  if (!timingSafeEqHex(expected, proof)) {
+    res.status(401).json({ success: false, error: { message: "Invalid credentials" } });
+    return;
+  }
+
+  consumeChallenge(challengeId);
+
+  //const accessToken = issueAccessToken(user);
   res.json({
     success: true,
     data: {
-      encryptSalt: userData.encryptSalt,
-    }
+      //accessToken,
+      encryptSalt: user.encryptSalt,
+    },
   });
+
+  //const accessToken = issueAccessToken(user);
+  //res.json({
+  //  success: true,
+  //  data: {
+  //    accessToken,
+  //    encryptSalt: user.encryptSalt, // αν θες να το δώσεις εδώ
+  //  },
+  //});
+
+  // get the user
+  //const db = await getAuthDB();
+  //const userData = db.data.users.find((u) => u.username === username);
+
+  //// Check if the user exists
+  //if (!userData || !userData.verifierK) {
+  //  console.log('🍒 authController.ts > loginFinish: user dont exist');
+  //  res.json({
+  //    success: false,
+  //    error: {
+  //      message: 'Error: Username or verifierK does not exist'
+  //    }
+  //  });
+  //  return;
+  //}
+
+  // if dont match its wrong password
+  //if (verifierK !== user.verifierK) {
+  //  console.log('🍒 authController.ts > loginFinish: verifierK does not match');
+  //  res.json({
+  //    success: false,
+  //    error: {
+  //      message: 'Error: verifierK does not match'
+  //    }
+  //  });
+  //  return;
+  //}
+
+
 }
 
 
@@ -443,5 +517,4 @@ const logout = async (req: Request, res: Response): Promise<void> => {
 //  }
 //}
 
-export { login, loginUsername, loginAuthproof, refresh, register, logout, user };
-
+export { login, loginStart, loginFinish, refresh, register, logout, user };

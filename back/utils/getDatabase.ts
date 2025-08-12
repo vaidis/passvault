@@ -20,6 +20,7 @@ export interface User {
     encryptSalt: string;
     authSalt: string;
     verifierK: string;
+    challenges: string;
 }
 
 export interface Users {
