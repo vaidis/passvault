@@ -1,134 +1,22 @@
 {
   "users": [
     {
-      "id": "00e24e2c-b978-4449-89c5-517820057f67",
-      "createdAt": "2025-08-12T10:57:07.762Z",
+      "id": "5a3ca355-bb0e-4b37-9863-ead93ce94694",
+      "createdAt": "2025-08-13T10:40:39.467Z",
       "email": "ste.vaidis@gmail.com",
       "username": "stevaidis",
-      "encryptSalt": "924f3250573de8d30d0a87a305677aab",
-      "authSalt": "bb90da923b092e347bb4ef0b93269da5",
-      "verifierK": "da5bd492996586f05992a2a943fb5101279323a4a8f7874efc797f9737c56aee5f2449be911d5dd624a59565c9ddabc0f1c4ac24d54e167cf0f98aa7a815dafd"
+      "encryptSalt": "add8f67c446cc71c5c0eb490f6da064a",
+      "authSalt": "b966090704d350f29fb2d4061e61dd9e",
+      "verifierK": "1b69d9feb69a06f79a0ec4c3ba6b148657a2f5620b136c41a128a68108ad7a496d54c4e5b86aba4540854ffefb3d53a5f47575df5b85014e48c2d291d5a6cdd6"
     }
   ],
   "challenges": [
     {
-      "id": "c67ece32-d841-43e9-8008-8d65dee258ef",
+      "id": "a3f2ecef-5bd4-4fb5-95f6-15d4e15a73b2",
       "username": "stevaidis",
-      "challengeHex": "e2afd6b1c987fb3bc5956531e455eba3ee830f88e14246e95f2dac7680f87ba6",
-      "expiresAt": 1754996474993,
-      "used": false
-    },
-    {
-      "id": "0c565867-c7e2-4188-a080-a53f8b3b5d93",
-      "username": "stevaidis",
-      "challengeHex": "e4b41e8856017c315d258e4e7f1ecaa515f17b3452a428fcd23f28ca126726f6",
-      "expiresAt": 1754996522412,
-      "used": false
-    },
-    {
-      "id": "fb634fcc-dd12-436b-8cec-fd48931c4d0a",
-      "username": "stevaidis",
-      "challengeHex": "ef1dfb81ae577f8381ec1e01d7e66302b7a88a8ae47704a0a9dba68390546367",
-      "expiresAt": 1754996624252,
-      "used": false
-    },
-    {
-      "id": "e2b6105a-c4f7-4dba-9289-bb0752b7e386",
-      "username": "stevaidis",
-      "challengeHex": "8a9ca3e59e17a3971320aaa3bef786268dbb6f644ffa69591dea03f20ce63dda",
-      "expiresAt": 1755009299962,
-      "used": false
-    },
-    {
-      "id": "0fc481f4-bb3c-4b6d-9e8a-f84af9e55bd0",
-      "username": "stevaidis",
-      "challengeHex": "7a1892aa1d36434d0629e7508b587e5316eff83de159e8a7b3fd2c695f10c567",
-      "expiresAt": 1755009315716,
-      "used": false
-    },
-    {
-      "id": "ee7b521d-2286-41a2-ba43-54799e369fe1",
-      "username": "stevaidis",
-      "challengeHex": "b3a36ac68d5d48b9440c3dd5587ebdad274b2595a227612e48f12940469e2640",
-      "expiresAt": 1755010389545,
-      "used": false
-    },
-    {
-      "id": "d8e3c73b-8c87-4b34-b9d8-41766574b5cb",
-      "username": "stevaidis",
-      "challengeHex": "6debfa88732d48a09f0b5dee30efe8257d26f29eb2bfc7909c54278f3afd32bb",
-      "expiresAt": 1755030814597,
-      "used": false
-    },
-    {
-      "id": "0095e04d-47d4-44a7-bf96-d7e6ed1f5fd4",
-      "username": "stevaidis",
-      "challengeHex": "aa9303374b929479eaa7b5ad8bb3711bc69d60109a7be6eb83405d60229a2f37",
-      "expiresAt": 1755031679482,
-      "used": false
-    },
-    {
-      "id": "d5a427f8-2ac7-4c7c-916c-92654fb79a70",
-      "username": "stevaidis",
-      "challengeHex": "c2b96538861e50fe310e018b299520eecbdd7e6a40f660bb6675982661ff00c1",
-      "expiresAt": 1755032359674,
-      "used": false
-    },
-    {
-      "id": "ddcf489b-a34f-4d22-a6df-ded02d1a8a2e",
-      "username": "stevaidis",
-      "challengeHex": "25973aca76b9aaed3659e4c05914e8703d3cc618f897a3c9d2ceda09e024205b",
-      "expiresAt": 1755032377346,
-      "used": false
-    },
-    {
-      "id": "621ff3fa-4c07-41df-9f18-26619cd433e8",
-      "username": "stevaidis",
-      "challengeHex": "c01a57fea4b47af0a9fb16d65a09633be455eb232a1383cb4fcecf23719cf81f",
-      "expiresAt": 1755032433229,
-      "used": false
-    },
-    {
-      "id": "5d044677-fd16-437a-bba4-c18de1cce994",
-      "username": "stevaidis",
-      "challengeHex": "5c524c74f2d6376a2d4a8a9be3174ab0c688df63bbe9be9d397c0ee329af6cfd",
-      "expiresAt": 1755032614659,
-      "used": false
-    },
-    {
-      "id": "faa4953e-7504-43e3-84c6-0b56b530469c",
-      "username": "stevaidis",
-      "challengeHex": "e19a36a8b54e8b1ab6c7e1218fd35b57bc4cfbd0839fbe3ebdd172f59f5d80d3",
-      "expiresAt": 1755028148021,
-      "used": false
-    },
-    {
-      "id": "a126f469-c56f-4ee9-88d3-ef5995611d7b",
-      "username": "stevaidis",
-      "challengeHex": "23a9b951bdbe26dc8b6ec936f88b9546ad8d110a3eb602d1ebfe5852fb3215b0",
-      "expiresAt": 1755029135434,
-      "used": false
-    },
-    {
-      "id": "5e159337-7462-4062-bac8-79cf899a7840",
-      "username": "stevaidis",
-      "challengeHex": "b255019b109727f17672fc98f2a4ae8f42d81469196c7fd8ecd6349bebd6be4c",
-      "expiresAt": 1755029568769,
+      "challengeHex": "7797b950bc6afcb1d85fcdfc0b35eb4fbf5331f2b4d0e12027c14618ed55c77d",
+      "expiresAt": 1755082746630,
       "used": true
-    },
-    {
-      "id": "dfd2c379-1fc0-4736-92ea-c854042cdaec",
-      "username": "stevaidis",
-      "challengeHex": "a4c4d2dff07204a7fa83ba06c43efc80563a86471cf392e3d52f04db77b70dcc",
-      "expiresAt": 1755029598632,
-      "used": false
-    },
-    {
-      "id": "7258e592-8182-4343-8c19-418bf14ccee6",
-      "username": "stevaidis",
-      "challengeHex": "17ee52f3977f792654dd317a7fdb22ab12cd3a4d9715229cebdd78386615eb1f",
-      "expiresAt": 1755029624208,
-      "used": false
     }
   ]
 }

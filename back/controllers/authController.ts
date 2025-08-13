@@ -7,10 +7,10 @@ import {
   verifyRefreshToken
 } from '../jwtTokens';
 import * as AuthService from '../services/authService';
-import { getUserDB, getRegisterDB } from '../utils/getDatabase';
 import { getAuthDB } from '../db/authDb';
 import { timingSafeEqHex, hmacSha256Hex, randomHex } from '../utils/crypto';
 import { getChallenge, isExpired, consumeChallenge } from '../utils/challenge';
+
 import type { UserRow } from '../db/authDb';
 
 
@@ -19,14 +19,14 @@ import type { UserRow } from '../db/authDb';
 //
 const register = async (req: Request, res: Response): Promise<void> => {
   console.log('🐞 authController.ts > register() req.body:', req.body);
+    const registerId = req.params.registerId;
 
   // check the register url
   try {
-    const registerId = req.params.registerId;
     const isRegisterIdExist = await AuthService.getRegisterId(registerId);
-    //console.log('🐞 authController.ts > register() isRegisterIdExist:', isRegisterIdExist);
 
     if (!isRegisterIdExist) {
+      console.log('🐞 authController.ts > register() isRegisterIdExist:', isRegisterIdExist);
       res.status(500).json({
         success: false,
         message: 'Register ID not found'
@@ -111,13 +111,18 @@ const register = async (req: Request, res: Response): Promise<void> => {
     const registerData = {email, username, encryptSalt, authSalt, verifierK};
     const uid = await AuthService.registerUser(registerData);
 
+    // delete used register id
+    const isRegisterIdDeleted = await AuthService.deleteRegisterId(registerId);
+    if (isRegisterIdDeleted) {
+      console.log('🐞 authController.ts > register > isRegisterIdDeleted:', isRegisterIdDeleted);
+    }
     // respond successfully
     res.status(200).json({
       success: true,
-      message: `User ${username} with ${uid} has been registered. Redirecting to login.`,
+      message: `User ${username} with ${uid} has been registered.`,
     });
   } catch (error) {
-    //console.log('🐞 authController.ts > register(): error:', error);
+    console.log('🐞 authController.ts > register(): error:', error);
     res.status(500).json({
       success: false,
       message: 'Register server error'

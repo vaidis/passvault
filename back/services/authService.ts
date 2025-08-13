@@ -1,5 +1,5 @@
 import { JwtPayload } from 'jsonwebtoken';
-import { getUserDB, getRegisterDB } from '../utils/getDatabase';
+import { getUserDB, getRegisterDB, RegisterIds } from '../utils/getDatabase';
 import { getAuthDB } from '../db/authDb';
 import {
   generateAccessToken,
@@ -105,6 +105,32 @@ export async function getRegisterId(id: string): Promise<Boolean> {
     return false;
   } catch (error) {
     console.log('🐞 authService.ts > getRegisterId(): service error');
+    return false;
+  }
+}
+
+
+
+
+export async function deleteRegisterId(id: string): Promise<Boolean> {
+  console.log('🐞 authService.ts > deleteRegisterId > id:', id);
+
+  try {
+    const db = await getRegisterDB();
+    const list = db.data?.id ?? [];
+    const before = list.length;
+    const afterList = list.filter(x => x !== id);
+    const erased = afterList.length !== before;
+
+    if (erased) {
+      db.data = { id: afterList };
+      await db.write();
+    }
+
+    console.log('🐞 authService.ts > deleteRegisterId > erased:', erased);
+    return erased;
+  } catch (error) {
+    console.log('🐞 authService.ts > deleteRegisterId: failed');
     return false;
   }
 }
