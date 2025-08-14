@@ -22,6 +22,7 @@ async function apiRequest<TResponse>(
     console.log(' 🔗 apiRequest endpoint:', endpoint);
     console.log(' 🔗 apiRequest options:', options);
     const config: RequestInit = {
+      'credentials': 'include',
       headers: {
         'Content-Type': 'application/json',
         ...getAuthHeaders(),

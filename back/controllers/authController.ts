@@ -19,7 +19,7 @@ import type { UserRow } from '../db/authDb';
 //
 const register = async (req: Request, res: Response): Promise<void> => {
   console.log('🐞 authController.ts > register() req.body:', req.body);
-    const registerId = req.params.registerId;
+  const registerId = req.params.registerId;
 
   // check the register url
   try {
@@ -208,6 +208,10 @@ async function getUserByUsername(username: string): Promise<UserRow | undefined>
   return userData;
 }
 
+
+
+
+
 //
 // POST /auth/login/finish
 //
@@ -221,14 +225,14 @@ const loginFinish = async (req: Request, res: Response): Promise<void> => {
     return;
   }
 
-  // get challenge, contains: { id, username, challengeHex, expiredAt, used}
+  // get challenge { id, username, challengeHex, expiredAt, used}
   const rec = await getChallenge(challengeId);
   if (!rec || rec.used || isExpired(rec.expiresAt)) {
     res.status(400).json({ success: false, error: { message: 'Invalid or expired challenge' } });
     return;
   }
 
-  // get user data, contains: {email, createdAt, username, encryptSalt, authSalt, verifierK}
+  // get user data {email, createdAt, username, encryptSalt, authSalt, verifierK}
   const user = await getUserByUsername(rec.username);
   if (!user) {
     res.status(404).json({ success: false, error: { message: 'User not found' } });
@@ -247,52 +251,33 @@ const loginFinish = async (req: Request, res: Response): Promise<void> => {
 
   consumeChallenge(challengeId);
 
-  //const accessToken = issueAccessToken(user);
-  res.json({
-    success: true,
-    data: {
-      //accessToken,
-      encryptSalt: user.encryptSalt,
-    },
+  // create tokens
+  const accessToken = generateAccessToken({ username: user.username});
+  const refreshToken = generateRefreshToken({ username: user.username});
+
+  // place tokens into secure cookies
+  res.cookie('accessToken', accessToken, {
+    httpOnly: process.env.NODE_ENV === 'production',
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    maxAge: 60 * 60 * 1000,  // 60 minutes
   });
 
-  //const accessToken = issueAccessToken(user);
-  //res.json({
-  //  success: true,
-  //  data: {
-  //    accessToken,
-  //    encryptSalt: user.encryptSalt, // αν θες να το δώσεις εδώ
-  //  },
-  //});
+  res.cookie('refreshToken', refreshToken, {
+    httpOnly: process.env.NODE_ENV === 'production',
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+  });
 
-  // get the user
-  //const db = await getAuthDB();
-  //const userData = db.data.users.find((u) => u.username === username);
-
-  //// Check if the user exists
-  //if (!userData || !userData.verifierK) {
-  //  console.log('🍒 authController.ts > loginFinish: user dont exist');
-  //  res.json({
-  //    success: false,
-  //    error: {
-  //      message: 'Error: Username or verifierK does not exist'
-  //    }
-  //  });
-  //  return;
-  //}
-
-  // if dont match its wrong password
-  //if (verifierK !== user.verifierK) {
-  //  console.log('🍒 authController.ts > loginFinish: verifierK does not match');
-  //  res.json({
-  //    success: false,
-  //    error: {
-  //      message: 'Error: verifierK does not match'
-  //    }
-  //  });
-  //  return;
-  //}
-
+  // respond successfully
+  res.json({
+    success: true,
+    message: `Hello ${username}`,
+    data: {
+      encryptSalt: user.encryptSalt,
+    }
+  });
 
 }
 
@@ -304,113 +289,25 @@ const loginFinish = async (req: Request, res: Response): Promise<void> => {
 
 
 
-
-//
-// POST /auth/login
-//
-const login = async (req: Request, res: Response): Promise<void> => {
-  try {
-    // First, ensure we have a valid body object
-    if (!req.body || typeof req.body !== 'object') {
-      res.status(400).json({
-        success: false,
-        message: 'Invalid request format',
-      });
-      return;
-    }
-
-    // Extract and sanitize credentials
-    let username: string = req.body.username;
-    let password: string = req.body.password;
-
-    // Basic type checking
-    if (typeof username !== 'string' || typeof password !== 'string') {
-      res.status(400).json({
-        success: false,
-        message: 'Username and password must be strings',
-      });
-      return;
-    }
-
-    // Trim whitespace
-    username = username.trim();
-    password = password.trim();
-
-    // Check if username and password are both provided
-    if (!username || !password) {
-      res.status(401).json({
-        success: false,
-        message: 'Username and password are required',
-      });
-      return;
-    }
-
     // Sanitize username: allow only alphanumeric characters and few symbols
-    const usernameRegex = /^[a-zA-Z0-9_.\-@]+$/;
-    if (!usernameRegex.test(username)) {
-      res.status(400).json({
-        success: false,
-        message: 'Username contains invalid characters',
-      });
-      return;
-    }
+    //const usernameRegex = /^[a-zA-Z0-9_.\-@]+$/;
+    //if (!usernameRegex.test(username)) {
+    //  res.status(400).json({
+    //    success: false,
+    //    message: 'Username contains invalid characters',
+    //  });
+    //  return;
+    //}
 
     // Sanitize username: allow only alphanumeric characters and some symbols
-    const passwordRegex = /^[a-zA-Z0-9!@#$%^&*()]+$/;
-    if (!passwordRegex.test(password)) {
-      res.status(400).json({
-        success: false,
-        message: 'Password contains invalid characters',
-      });
-      return;
-    }
-
-    // check credentials
-    const result = await AuthService.authenticateUser(username, password);
-
-    // invalid credentials: abort
-    if (!result.success) {
-      res.status(401).json({
-        success: false,
-        message: result.error
-      });
-      return;
-    }
-
-    // valid credentials: place tokens into secure cookies
-    res.cookie('accessToken', result.accessToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',      // Prevent CSRF
-      maxAge: 60 * 60 * 1000,  // 60 minutes
-    });
-
-    res.cookie('refreshToken', result.refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      //maxAge: 60 * 60 * 1000,  // 60 minutes
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    });
-
-    // respond successfully
-    res.json({
-      success: true,
-      message: `Hello ${result.user.username}`,
-      data: {
-        role: result.user.role,
-        username: result.user.username
-      }
-    });
-  } catch (error) {
-    console.log('🐞 authController.ts > login(): error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Internal server error'
-    });
-    return;
-  }
-};
+    //const passwordregex = /^[a-za-z0-9!@#$%^&*()]+$/;
+    //if (!passwordregex.test(password)) {
+    //  res.status(400).json({
+    //    success: false,
+    //    message: 'password contains invalid characters',
+    //  });
+    //  return;
+    //}
 
 //
 // GET /auth/refresh
@@ -522,4 +419,4 @@ const logout = async (req: Request, res: Response): Promise<void> => {
 //  }
 //}
 
-export { login, loginStart, loginFinish, refresh, register, logout, user };
+export { loginStart, loginFinish, refresh, register, logout, user };

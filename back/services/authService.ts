@@ -88,6 +88,9 @@ export type UserRow = UserInsert & {
 
 
 
+//
+// Register ID: GET
+//
 export async function getRegisterId(id: string): Promise<Boolean> {
   console.log('🐞 authService.ts > registeredId');
   try {
@@ -112,6 +115,9 @@ export async function getRegisterId(id: string): Promise<Boolean> {
 
 
 
+//
+// Register ID: DELETE
+//
 export async function deleteRegisterId(id: string): Promise<Boolean> {
   console.log('🐞 authService.ts > deleteRegisterId > id:', id);
 
@@ -138,7 +144,7 @@ export async function deleteRegisterId(id: string): Promise<Boolean> {
 
 
 //
-// Register
+// Register USER
 //
 export async function registerUser(userData: UserInsert): Promise<string> {
   console.log('🐞 authService.ts > registerUser > userData:', userData);
@@ -206,6 +212,7 @@ export async function isUserExist(username: string): Promise<Boolean> {
  * Authenticates a user with username and password
  */
 export async function authenticateUser(username: string, password: string): Promise<AuthResult> {
+  console.log('🐞 authService.ts > authenticateUser()');
   try {
     // get the user
     const db = await getAuthDB();
@@ -213,9 +220,10 @@ export async function authenticateUser(username: string, password: string): Prom
 
     // Check if the user exists
     if (!user) {
-      console.log('🐞 authService.ts > authenticateUser(): user not found');
+      console.log(`🐞 authService.ts > authenticateUser(): user ${username} not found`);
       return { success: false, error: 'user not found' };
     }
+    console.log(`🐞 authService.ts > authenticateUser(): user ${username} found`);
 
     // check the password
     if (password !== user.password) {
