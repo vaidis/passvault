@@ -1,7 +1,7 @@
 // Ενιαίο σχήμα για ApiResponse: success | failure με error.message
 export type ApiResponse<TData> =
-  | { success: true; data: TData }
-  | { success: false; error: { message: string } };
+  | { success: true; message?: string; data?: TData }
+  | { success: false; message?: string; error: { message: string } };
 
 // --- Login Types ---
 export type LoginCredentials = {
@@ -19,66 +19,15 @@ export type LoginStartResponse = {
   challenge: string;
 };
 
-// Το σώμα που στέλνουμε στο /login/authproof
 export type LoginFinishRequest = {
   username: string;
   proof: string;
   challengeId: string;
 };
 
-// Τελικό επιτυχές response (όπως στο παράδειγμά σου)
 export type LoginFinishResponse = {
   encryptSalt: string;
 };
-
-
-// export type ApiResponse<T = void> = ApiSuccess<T> | ApiFailure;
-
-// export type ApiSuccess<T> = {
-//     success: true;
-//     data: T;
-//     message?: string;
-// };
-
-// export type ApiFailure = {
-//   success: false;
-//   message: string;
-//   status?: number;
-//   errors?: Record<string, string[]>;
-// };
-
-// export interface ApiError extends Error {
-//   status?: number;
-//   details?: unknown;
-// }
-
-
-// // login flow
-// export type TCredentials = {
-//   username: string;
-//   password: string;
-// }
-
-// export type TAuthLoginRequest = {
-//   username: string;
-//   password: string;
-// }
-
-// export type TLoginUsernameRequest = {
-//   username: string;
-// }
-
-// export type TLoginUsernameResponse = {
-//   authSalt: string;
-// }
-
-// export type TLoginAuthproofRequest = {
-//   authproof: string;
-// }
-
-// export type TLoginAuthproofResponse = {
-//   encryptSalt: string;
-// }
 
 
 
@@ -98,16 +47,6 @@ export interface RegisterResponse {
 }
 
 
-// login
-export type TSendUsernameRequest = {
-  username: string;
-}
-
-export type TSendUsernameResponse = {
-  authSalt: string;
-}
-
-// encryptSalt: string;
 
 // data
 export interface User {

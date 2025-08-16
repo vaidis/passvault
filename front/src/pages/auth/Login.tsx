@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-// import {useNavigate } from 'react-router';
+ import {useNavigate } from 'react-router';
 import {authApi} from '../../api/auth'
-import type { ApiResponse, LoginFinalResponse } from "../../api/types";
+import type { ApiResponse, LoginFinishResponse } from "../../api/types";
 
 type FormData = {
   username: string;
@@ -9,34 +9,34 @@ type FormData = {
 };
 
 const initialFormData: FormData = {
-    username: "stevaidis",
-    password: "1234",
+  username: "stevaidis",
+  password: "1234",
 };
 
 const Login: React.FC = () => {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState<FormData>(initialFormData);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [successMessage, setSuccessMessage] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  //const [redirectCountdown, setRedirectCountdown] = useState<number | null>(null);
-  
+  const [redirectCountdown, setRedirectCountdown] = useState<number | null>(null);
+
   // redirect after a while, after showing the success message
-  //React.useEffect(() => {
-  //  if (redirectCountdown === null) return;
-  //
-  //  if (redirectCountdown <= 0) {
-  //    navigate("/data");
-  //    return;
-  //  }
-  //
-  //  const timer = setTimeout(() => {
-  //    setRedirectCountdown((prev) => (prev !== null ? prev - 1 : null));
-  //  }, 1000);
-  //
-  //  return () => clearTimeout(timer);
-  //}, [redirectCountdown, navigate]);
+  React.useEffect(() => {
+    if (redirectCountdown === null) return;
+
+    if (redirectCountdown <= 0) {
+      navigate("/data");
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setRedirectCountdown((prev) => (prev !== null ? prev - 1 : null));
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [redirectCountdown, navigate]);
 
   // insert allowed characters into fields
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,14 +56,15 @@ const Login: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      const response: ApiResponse<LoginFinalResponse> = await authApi.login(formData);
-
-
+      const response: ApiResponse<LoginFinishResponse> = await authApi.login(formData);
       if (response.success) {
         const encryptSalt = response.data.encryptSalt;
         // const accessToken = response.data.accessToken;
         // localStorage.setItem("authToken", accessToken);
         console.log("encryptSalt", encryptSalt);
+        setSuccessMessage("Registration successful!");
+        setFormData(initialFormData);
+        setRedirectCountdown(3);
         // redirect / UI update...
       } else {
         setErrorMessage(response.error.message);
@@ -71,32 +72,6 @@ const Login: React.FC = () => {
     } catch (error) {
       console.log('error:', error);
     }
-
-    // use password only to create authProof string
-    //const authProof = CryptoJS.PBKDF2(password, authSalt, {
-    //  keySize: 512 / 32,
-    //  iterations: 10000
-    //}).toString(CryptoJS.enc.Hex);
-
-    //const body = {
-    //  username,
-    //  authProof,
-    //};
-
-    //try {
-    //  const response = await authApi.register(body);
-    //  console.log('register response:', response)
-    //  if (!response.success) {
-    //    throw new Error(response.message || "Registration failed.");
-    //  }
-    //  setSuccessMessage("Registration successful!");
-    //  setFormData(initialFormData);
-    //  setRedirectCountdown(3);
-    //} catch (err: any) {
-    //  setErrorMessage(err.message);
-    //} finally {
-    //  setIsSubmitting(false);
-    //}
   };
 
   return (
@@ -122,6 +97,9 @@ const Login: React.FC = () => {
       {successMessage && (
         <p style={{ color: "green" }}>
           {successMessage}
+          {redirectCountdown !== null && (
+            <span> Redirecting in {redirectCountdown}...</span>
+          )}
         </p>
       )}
     </form>

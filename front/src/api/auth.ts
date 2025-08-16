@@ -11,19 +11,6 @@ import type {
   RegisterResponse,
 } from "./types";
 
-// import type {
-//   TCredentials,
-//   ILoginUsernameRequest,
-//   ILoginUsernameResponse,
-//   ILoginAuthproofRequest,
-//   ILoginAuthproofResponse,
-//   RegisterRequest,
-//   RegisterResponse,
-//   ApiResponse,
-//   TAuthLoginRequest,
-//   TSendUsernameResponse,
-//   TSendUsernameRequest
-// } from './types';
 import { getLastUrlSegment } from '../utils/getLastUrlSegment';
 
 const registerId = getLastUrlSegment();
@@ -36,14 +23,6 @@ const endpoint = {
   logout: '/auth/logout',
   refresh: '/auth/refresh'
 }
-
-  // Send username - Get salt
-  //const sendUsername = async (
-  //  username: ISendUsernameRequest
-  //): Promise<ApiResponse<ISendUsernameResponse>> => {
-  //    const response = await authApi.sendUsername(username);
-  //    return response || null;
-  //}
 
 export const authApi = {
   //
@@ -85,7 +64,7 @@ export const authApi = {
       proof: proofHex,
       username: credentials.username,
     }
-    
+
     // send proof to get encrypt salt
     const finishResponse = await apiClient.post<LoginFinishRequest, LoginFinishResponse>(
       endpoint.loginFinish, finishRequest
@@ -98,11 +77,12 @@ export const authApi = {
   //
   // Logout
   //
-  //logout: async (): Promise<ApiResponse<null>> => {
-  //  return apiClient.post<ApiResponse<null>>(endpoint.logout);
-  //},
-  //
+  logout: async (): Promise<ApiResponse<null>> => {
+    console.log(' 🍓 auth.ts > logout');
+    return apiClient.get<ApiResponse<null>>(endpoint.logout);
+  },
+
   //refreshToken: async (): Promise<ApiResponse<{ token: string }>> => {
-  //  return apiClient.post<ApiResponse<{ token: string }>>(endpoint.refresh);
+  //  return apiClient.get<ApiResponse<{ token: string }>>(endpoint.refresh);
   //},
 };

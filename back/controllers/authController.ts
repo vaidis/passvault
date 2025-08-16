@@ -403,7 +403,7 @@ const logout = async (req: Request, res: Response): Promise<void> => {
     res.clearCookie('refreshToken');
     res.status(200).json({ success: true, message: 'Logged out successfully' });
   } catch (error) {
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ success: false, message: 'Logout failed', error: 'Internal server error' });
   }
 }
 

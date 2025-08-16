@@ -44,7 +44,7 @@ const Register: React.FC = () => {
     return () => clearTimeout(timer);
   }, [redirectCountdown, navigate]);
 
-  // 
+  //
   // Change
   //
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,7 +57,7 @@ const Register: React.FC = () => {
     }
   };
 
-  // 
+  //
   // Submit
   //
   const handleSubmit = async (e: React.FormEvent) => {

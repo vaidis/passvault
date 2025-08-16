@@ -3,6 +3,7 @@ import { createBrowserRouter, Navigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import Register from '../pages/auth/Register';
 import Login from '../pages/auth/Login';
+import Logout from '../pages/auth/Logout';
 import Data from '../pages/Data';
 import User from '../pages/User';
 
@@ -25,6 +26,10 @@ export const router = createBrowserRouter([
           {
             path: 'register/:registerId',
             element: <Register />,
+          },
+          {
+            path: 'logout',
+            element: <Logout />,
           },
         ],
       },

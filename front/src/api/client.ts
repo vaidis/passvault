@@ -63,20 +63,6 @@ async function apiRequest<TResponse>(
 export const get = <T>(endpoint: string): Promise<T> =>
   apiRequest<T>(endpoint, { method: 'GET' });
 
-// working for register
-
-// export const post = <ApiResponse, TData = Record<string, unknown>>(
-//   endpoint: string,
-//   data: TData
-// ): Promise<ApiResponse> => {
-//   console.log(' 🔗 client.ts post endpoint:', endpoint)
-//   console.log(' 🔗 client.ts post data:', data)
-//   return apiRequest<ApiResponse>(endpoint, {
-//     method: 'POST',
-//     body: data ? JSON.stringify(data) : undefined,
-//   });
-// }
-
 
 
 export const post = async <TReq, TRes>(
@@ -90,21 +76,6 @@ export const post = async <TReq, TRes>(
 };
 
 
-//export const post = <TResponse, TData = Record<string, unknown>>(
-//  endpoint: string,
-//  data: TData
-//): Promise<TResponse> =>
-//  apiRequest<TResponse>(endpoint, {
-//    method: 'POST',
-//    body: data ? JSON.stringify(data) : undefined,
-//  });
-
-
-//export const post = <T>(endpoint: string, data: any): Promise<T> =>
-//  apiRequest<T>(endpoint, {
-//    method: 'POST',
-//    body: data ? JSON.stringify(data) : undefined,
-//  });
 
 export const put = <T>(endpoint: string, data?: any): Promise<T> =>
   apiRequest<T>(endpoint, {
