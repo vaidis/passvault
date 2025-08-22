@@ -25,7 +25,7 @@ export type AuthSuccess = {
 
 export type AuthFailure = {
   success: false;
-  error: string;
+  message: string;
 }
 
 export type AuthResult = AuthSuccess | AuthFailure;
@@ -39,7 +39,7 @@ export type TokenRefreshSuccess = {
 
 export type TokenRefreshFailure = {
   success: false;
-  error: string;
+  message: string;
 }
 
 export type TokenRefreshResult = TokenRefreshSuccess | TokenRefreshFailure;
@@ -52,7 +52,7 @@ export type UserInfoSuccess = {
 
 export type UserInfoFailure = {
   success: false;
-  error: string;
+  message: string;
 }
 
 export type UserInfoResult = UserInfoSuccess | UserInfoFailure;
@@ -221,14 +221,14 @@ export async function authenticateUser(username: string, password: string): Prom
     // Check if the user exists
     if (!user) {
       console.log(`🐞 authService.ts > authenticateUser(): user ${username} not found`);
-      return { success: false, error: 'user not found' };
+      return { success: false, message: 'user not found' };
     }
     console.log(`🐞 authService.ts > authenticateUser(): user ${username} found`);
 
     // check the password
     if (password !== user.password) {
       console.log('🐞 authService.ts > authenticateUser(): password not found');
-      return { success: false, error: 'Authentication failed' };
+      return { success: false, message: 'Authentication failed' };
     }
 
     // create tokens

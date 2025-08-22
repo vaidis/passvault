@@ -143,6 +143,69 @@
       "challengeHex": "8ed5646adbece2d06d62e51cf884e7c09530b7a70f83f10b50eddea6995ac4a7",
       "expiresAt": 1755336701094,
       "used": true
+    },
+    {
+      "id": "afb71bdb-1580-4cb8-a3de-dcfd585acee0",
+      "username": "stevaidis",
+      "challengeHex": "9703c04ab5a0bbda8d15b8da4e655488dbdb9c32bdb075206836be1ee1b1b850",
+      "expiresAt": 1755377549746,
+      "used": true
+    },
+    {
+      "id": "04dc744c-f927-4199-85e3-fee6b8ac1cc9",
+      "username": "stevaidis",
+      "challengeHex": "f32ce4e92533f9463e5e0b690278981da51de70b4d0ff88ba11bc3d4062cf032",
+      "expiresAt": 1755430580549,
+      "used": true
+    },
+    {
+      "id": "064804dd-5fc2-47e7-8a58-b4405d3813ab",
+      "username": "stevaidis",
+      "challengeHex": "5fc1326759c5f394a0c29e944fc52b5ccfe9f7c07aca933374f9781e1056a81b",
+      "expiresAt": 1755430998351,
+      "used": true
+    },
+    {
+      "id": "bd0cb608-fa12-4037-9fb7-25c95710141e",
+      "username": "stevaidis",
+      "challengeHex": "b295387a9a7889bb512a8dd802c7eb06cb4261b888a1335c22859c35e82337f5",
+      "expiresAt": 1755719353072,
+      "used": true
+    },
+    {
+      "id": "977404c5-f561-45e3-9472-9169f253df0b",
+      "username": "stevaidis",
+      "challengeHex": "aa87c2027916a9eb569eacde659ef0f318550a8ac12bc819e8c8f1e96a00780b",
+      "expiresAt": 1755721465617,
+      "used": true
+    },
+    {
+      "id": "e77868ea-528d-4743-8e7b-c568e7340a63",
+      "username": "stevaidis",
+      "challengeHex": "05cd3db13a99ecd01c9f34383f4f376cbf789f619a3f636e994e418952a636ba",
+      "expiresAt": 1755721725579,
+      "used": true
+    },
+    {
+      "id": "86ed0cbd-34e8-46b7-ae2d-8dc2521e0cfc",
+      "username": "stevaidis",
+      "challengeHex": "a30c1746c5c43e8bdebb37fc13c878644fbb6ef1032633d4d11423642557e6f4",
+      "expiresAt": 1755721832597,
+      "used": true
+    },
+    {
+      "id": "867bf115-e579-4e8a-8a4d-c342c48f19a3",
+      "username": "stevaidis",
+      "challengeHex": "8484a69464af73922aa89d0fb51202d342327140788def349edc97c741fe608e",
+      "expiresAt": 1755779822684,
+      "used": true
+    },
+    {
+      "id": "8501528c-3f2c-40cd-a82a-109213f5fbec",
+      "username": "stevaidis",
+      "challengeHex": "b56be6137f79826faf0873c3933c83354e4bea008474d89b2295677b829fc1e3",
+      "expiresAt": 1755860136165,
+      "used": true
     }
   ]
 }

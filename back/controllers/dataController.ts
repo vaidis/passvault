@@ -2,8 +2,9 @@ import { Request, Response } from 'express';
 import { findData, deleteRow, editRow, newRow } from '../services/dataService';
 
 export const getData = async (req: Request, res: Response): Promise<void> => {
+  console.log(' ☢️  dataController.ts > getData > req.user:', req.user);
   try {
-    const response = await findData(req.params.username);
+    const response = await findData(req.user.username);
     res.json(response);
   } catch (error) {
     res.status(500).json({ success: false, message: 'Error fetching data' });

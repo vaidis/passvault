@@ -1,3 +1,4 @@
+import { user } from '../controllers/authController';
 import { getDataDB } from '../utils/getDatabase';
 
 export interface Item {
@@ -36,8 +37,10 @@ async function getData(username:string): Promise<Item[]> {
 }
 
 export async function findData (username: string) {
+  console.log('dataService.ts > findData > username:', username)
   try {
     const newData = await getData(username);
+    console.log('dataService.ts > findData > newData :', newData )
     const response = {
       success: true,
       data: newData

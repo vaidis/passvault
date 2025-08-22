@@ -313,13 +313,13 @@ const loginFinish = async (req: Request, res: Response): Promise<void> => {
 // GET /auth/refresh
 //
 const refresh = async (req: Request, res: Response): Promise<void> => {
-  console.log(' ⭐️ authController.ts > refresh()');
+  console.log('⭐️ authController.ts > refresh()');
 
   // check if there is a refreshToken cookie
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) {
-    console.log(' ⭐️ authController.ts > refresh() > No refresh token provided');
-    res.status(401).json({ success: false, error: 'No refresh token provided' });
+    console.log('⭐️ authController.ts > refresh() > No refresh token provided');
+    res.status(401).json({ success: false, message: 'No refresh token provided' });
     return;
   }
 
@@ -327,8 +327,8 @@ const refresh = async (req: Request, res: Response): Promise<void> => {
     // check if the refresh cookie cointains a valid refresh token
     const decoded = verifyRefreshToken(refreshToken);
     if (typeof decoded !== 'object' || decoded === null || !('username' in decoded)) {
-      console.log(' ⭐️ authController.ts > refresh() > Invalid token payload');
-      res.status(403).json({ success: false, error: 'Invalid token payload' });
+      console.log('⭐️ authController.ts > refresh() > Invalid token payload');
+      res.status(403).json({ success: false, message: 'Invalid token payload' });
       return;
     }
 
@@ -351,8 +351,10 @@ const refresh = async (req: Request, res: Response): Promise<void> => {
 
     res.json({ success: true, role: payload.role });
   } catch (err) {
-    console.log(' ⭐️ authController.ts > refresh() > Invalid or expired refresh token');
-    res.status(403).json({ success: false, error: 'Invalid or expired refresh token' });
+    console.log('⭐️ authController.ts > refresh() > Invalid or expired refresh token');
+    res.clearCookie('accessToken');
+    res.clearCookie('refreshToken');
+    res.status(403).json({ success: false, message: 'Token expired' });
     return;
   }
 };

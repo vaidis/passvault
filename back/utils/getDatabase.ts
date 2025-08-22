@@ -38,12 +38,14 @@ export interface RegisterIds {
 }
 
 export async function getDataDB(username:string) {
+    console.log('🐞 getDatabase.ts > getDataDB:');
     const file = `db/data/${username}.db.json`;
     const defaultData: Items = { items: [] };
     const adapter = new JSONFile<Items>(file);
     const db = new Low<Items>(adapter, defaultData);
     await db.read();
     db.data ||= { items: [] };
+    console.log('🐞 getDatabase.ts > getDataDB > db:', db);
     return db;
 }
 

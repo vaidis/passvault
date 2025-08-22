@@ -1,9 +1,11 @@
-// Ενιαίο σχήμα για ApiResponse: success | failure με error.message
+// Api
 export type ApiResponse<TData> =
   | { success: true; message?: string; data?: TData }
-  | { success: false; message?: string; error: { message: string } };
+  | { success: false; message?: string; };
 
-// --- Login Types ---
+
+
+// Login
 export type LoginCredentials = {
   username: string;
   password: string;
@@ -30,9 +32,7 @@ export type LoginFinishResponse = {
 };
 
 
-
-
-// register
+// Register
 export interface RegisterData {
   email: string;
   username: string;
@@ -48,7 +48,21 @@ export interface RegisterResponse {
 
 
 
-// data
+// Data
+export type DataItems = DataItem[];
+
+export type DataItem = {
+  title: string;
+  username: string;
+  password: string;
+  notes: string;
+  created?: Date;
+  edited?: Date;
+}
+
+
+
+// User
 export interface User {
   id: string;
   email: string;
@@ -57,10 +71,3 @@ export interface User {
   createdAt: string;
 }
 
-export interface DataItem {
-  id: string;
-  title: string;
-  description: string;
-  value: number;
-  createdAt: string;
-}

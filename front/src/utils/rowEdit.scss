@@ -1,0 +1,45 @@
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+
+.field {
+  display: flex;
+  flex-direction: column;
+  margin: 10px 0px;
+}
+
+.label {
+  color: var(--foreground-dark);
+}
+
+
+.error {
+  display: block;
+  color: var(--text-error);
+  text-align: right;
+  min-height: 15px;
+  font-size: 12px;
+  margin-top:5px;
+}
+
+.button {
+  margin: 20px 0px 0px 0px;
+  margin-left: auto;
+  background-color: var(--primary);
+  color: var(--white);
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.buttonLabel {
+  margin-left: 15px;
+}

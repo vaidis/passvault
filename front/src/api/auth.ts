@@ -24,6 +24,7 @@ const endpoint = {
   refresh: '/auth/refresh'
 }
 
+
 export const authApi = {
   //
   // Register
@@ -44,12 +45,13 @@ export const authApi = {
     console.log(' 🍓 authApi > login > startRequest:', startRequest);
     console.log(' 🍓 authApi > login > startResponse:', startResponse);
 
-    // chekc if username exist
+    // check if username exist
     if (!startResponse.success) {
       return startResponse;
     }
 
     // repare the final request
+    if (startResponse.data) {
     const { authSalt, challengeId, challenge } = startResponse.data;
     const authSaltWA = CryptoJS.enc.Hex.parse(authSalt);
     const Khex = CryptoJS.PBKDF2(credentials.password, authSaltWA, {
@@ -69,9 +71,16 @@ export const authApi = {
     const finishResponse = await apiClient.post<LoginFinishRequest, LoginFinishResponse>(
       endpoint.loginFinish, finishRequest
     );
-    console.log(' 🍓 auth.ts > login > responseFinish:', finishRequest);
+    console.log(' 🍓 auth.ts > login > finishRequest:', finishRequest);
     console.log(' 🍓 auth.ts > login > finishResponse:', finishResponse);
     return finishResponse;
+
+    } else {
+      return {
+        success: false,
+        message: 'fail to create salts'
+      }
+    }
   },
 
   //
@@ -79,10 +88,6 @@ export const authApi = {
   //
   logout: async (): Promise<ApiResponse<null>> => {
     console.log(' 🍓 auth.ts > logout');
-    return apiClient.get<ApiResponse<null>>(endpoint.logout);
+    return apiClient.get<null>(endpoint.logout);
   },
-
-  //refreshToken: async (): Promise<ApiResponse<{ token: string }>> => {
-  //  return apiClient.get<ApiResponse<{ token: string }>>(endpoint.refresh);
-  //},
 };

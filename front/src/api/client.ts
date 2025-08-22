@@ -1,69 +1,83 @@
+import type { ApiResponse } from './types'
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
-import type { ApiResponse, TResponse, ApiError } from './types'
-
-
-
-
-// Helper function to get auth headers
-const getAuthHeaders = (): Record<string, string> => {
-  console.log('clients.ts getAuthHeaders')
-  const token = localStorage.getItem('authToken');
-  return token ? { Authorization: `Bearer ${token}` } : {};
-};
-
-
-
+const pathRefreshToken = `${API_BASE_URL}/auth/refresh`;
 
 async function apiRequest<TResponse>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<ApiResponse<TResponse>> {
-  try {
-    console.log(' 🔗 apiRequest endpoint:', endpoint);
-    console.log(' 🔗 apiRequest options:', options);
+  //try {
+    console.log(' 🔗  apiRequest endpoint:', endpoint);
+    console.log(' 🔗  apiRequest options:', options);
     const config: RequestInit = {
       'credentials': 'include',
       headers: {
         'Content-Type': 'application/json',
-        ...getAuthHeaders(),
-        ...(options.headers ?? {}),
       },
       ...options,
     };
 
     const url = `${API_BASE_URL}${endpoint}`;
     const response = await fetch(url, config);
-    const json = (await response.json()) as unknown;
+    const json = (await response.json()) as ApiResponse<null>;
 
-    console.log('apiRequest url:', url);
-    console.log('apiRequest response > json:', json);
+    console.log(' 🔗  apiRequest url:', url);
+    console.log(' 🔗  apiRequest response > json:', JSON.stringify(json));
+    console.log(' 🔗  apiRequest response > json.message:', json.message); // jwt missing
+    console.log(' 🔗  apiRequest response > typeof(json.message):', typeof(json.message)); // string
 
-    if (!response.ok) {
-      const message =
-        (json as any)?.message ||
-        (json as any)?.error?.message ||
-        `Request failed with status ${response.status}`;
-      return { success: false, error: { message } };
+    if (json.success === false && json.message === 'jwt missing') {
+    //if (json.message === 'jwt expired') { // always not equal
+    //if (json.success === false) {
+      console.log(' 🔗  trying to refresh');
+      //console.log(' 🔗  apiRequest response > false > json:', json);
+
+      // try to refresh the access token
+      const responseRefresh = await fetch(
+        pathRefreshToken,
+        {
+          credentials: 'include',
+          headers: {'Content-Type': 'application/json'},
+          method: "POST",
+        }
+      );
+      const json = (await responseRefresh.json()) as ApiResponse<null>;
+
+      // repeat the last fetch with new tokens
+      if (json.success === true) {
+        console.log(' 🔗  fetch with fresh tokens');
+        const response = await fetch(url, config);
+        const json = (await response.json()) as ApiResponse<null>;
+        return json as ApiResponse<TResponse>;
+      } else {
+        console.log(' 🔗  refresh failed');
+        window.location.href = '/auth/login';
+        // refresh token failed
+        return {
+          success: false,
+          message: `Request failed with status ${response.status}`
+        };
+      }
     }
 
+    // no refresh token needed
     return json as ApiResponse<TResponse>;
-  } catch (error) {
-    let message = 'Unknown error';
-    if (error instanceof Error) message = error.message;
-      return { success: false, error: { message } };
-  }
+  //} catch (error:Error) {
+  //  return { success: false, message: error.message };
+  //}
 }
 
-
-
-
-
-
+//
 // HTTP method functions
-export const get = <T>(endpoint: string): Promise<T> =>
-  apiRequest<T>(endpoint, { method: 'GET' });
-
-
+//
+export const get = <TRes>(
+  endpoint: string
+): Promise<ApiResponse<TRes>> => {
+  return apiRequest<TRes>(endpoint, {
+    method: 'GET'
+  });
+}
 
 export const post = async <TReq, TRes>(
   endpoint: string,
@@ -75,20 +89,23 @@ export const post = async <TReq, TRes>(
   });
 };
 
-
-
-export const put = <T>(endpoint: string, data?: any): Promise<T> =>
-  apiRequest<T>(endpoint, {
-    method: 'PUT',
-    body: data ? JSON.stringify(data) : undefined,
+export const put = async <TReq, TRes>(
+  endpoint: string,
+  data: TReq
+): Promise<ApiResponse<TRes>> => {
+  return apiRequest<TRes>(endpoint, {
+    method: "PUT",
+    body: JSON.stringify(data),
   });
+};
 
-export const del = <T>(endpoint: string): Promise<T> =>
-  apiRequest<T>(endpoint, { method: 'DELETE' });
-
-export const patch = <T>(endpoint: string, data?: any): Promise<T> =>
-  apiRequest<T>(endpoint, {
-    method: 'PATCH',
-    body: data ? JSON.stringify(data) : undefined,
+export const del = async <TReq, TRes>(
+  endpoint: string,
+  data: TReq
+): Promise<ApiResponse<TRes>> => {
+  return apiRequest<TRes>(endpoint, {
+    method: "DELETE",
+    body: JSON.stringify(data),
   });
+};
 
