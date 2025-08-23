@@ -1,9 +1,7 @@
 // Api
 export type ApiResponse<TData> =
   | { success: true; message?: string; data?: TData }
-  | { success: false; message?: string; };
-
-
+  | { success: false; message?: string };
 
 // Login
 export type LoginCredentials = {
@@ -31,7 +29,6 @@ export type LoginFinishResponse = {
   encryptSalt: string;
 };
 
-
 // Register
 export interface RegisterData {
   email: string;
@@ -46,8 +43,6 @@ export interface RegisterResponse {
   message: string;
 }
 
-
-
 // Data
 export type DataItems = DataItem[];
 
@@ -56,11 +51,9 @@ export type DataItem = {
   username: string;
   password: string;
   notes: string;
-  created?: Date;
-  edited?: Date;
-}
-
-
+  created: number;
+  edited: number;
+};
 
 // User
 export interface User {
@@ -70,4 +63,3 @@ export interface User {
   lastName: string;
   createdAt: string;
 }
-

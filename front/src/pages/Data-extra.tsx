@@ -167,6 +167,53 @@ const Data: React.FC = () => {
     </div>
   )
 
+
+  return (
+    <div>
+      <Modal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        title={modalTitle}
+      >
+        {modalContent}
+      </Modal>
+      {data &&
+        data.map((row: DataItem, index: number) => (
+          <div
+            key={index}
+            onClick={() => toggleActions(index)}
+            className={"item"}
+          >
+            <div>
+              <div className={"data"}>
+                <div className={"title"}>Title: {row.title}</div>
+                <div className={"username"}>Username: {row.username}</div>
+                <div className={"password"}>Password: {row.password}</div>
+                <div className={"notes"}>Notes: {row.notes}</div>
+                <div className={"created"}>Created: {row.created}</div>
+                <div className={"edited"}>Edited: {row.edited}</div>
+              </div>
+              <div style={{ cursor: "pointer" }}></div>
+            </div>
+
+            <div className={`actions ${actionsIndex === index && 'show'}`}>
+
+              <div className={"edit"} onClick={() => editHandler(row)}>
+                <div className={"actionLabel"}>Edit</div>
+              </div>
+
+              <div className={"delete"} onClick={() => deleteHandler(row)}>
+                <div className={"actionLabel"}>Delete</div>
+              </div>
+
+            </div>
+
+          </div>
+        ))}
+      {!data && <div>You don't have any passwords stored.</div>}
+    </div>
+  );
+  
 };
 
 export default Data;

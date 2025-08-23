@@ -91,7 +91,7 @@ const Login: React.FC = () => {
         </div>
       ))}
       <button type="submit" disabled={isSubmitting}>
-        {isSubmitting ? "Registering..." : "Register"}
+        {isSubmitting ? "Login..." : "Login"}
       </button>
       {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
       {successMessage && (
