@@ -1,17 +1,16 @@
-.modalContainer {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-  }
-  
-  .modalOverlay {
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+
+  &__overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -19,8 +18,8 @@
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.5);
   }
-  
-  .modalContent {
+
+  &__content {
     position: relative;
     background-color: var(--background);
     border-radius: 5px;
@@ -30,22 +29,22 @@
     z-index: 1001;
     padding: 40px;
   }
-  
-  .modalHeader {
+
+  &__header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-    // padding: 20px 20px 0px 20px;
   }
-  
-  .modalTitle {
+
+  &__title {
     margin: 0;
     font-size: 18px;
     font-weight: 600;
+    color: var(--foreground-light);
   }
-  
-  .modalCloseButton {
+
+  &__close-button {
     background: none;
     color: var(--red);
     border: none;
@@ -53,7 +52,6 @@
     cursor: pointer;
     font-size: 20px;
     font-weight: bold;
-    font-family: 'Courier New', Courier, monospace;
     padding: 0;
     display: flex;
     align-items: center;
@@ -61,8 +59,8 @@
     width: 24px;
     height: 24px;
   }
-  
-  .modalCloseButton:hover {
-    color: #ff5533;
+
+  &__close-button:hover {
+    color: var(--white);
   }
-    
+}

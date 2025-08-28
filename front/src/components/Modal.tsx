@@ -43,25 +43,25 @@ const Modal: React.FC<ModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className={'modalContainer'}>
+    <div className={'modal'}>
       <div
-        className={'modalOverlay'}
+        className={'modal__overlay'}
         onClick={handleOutsideClick}
       />
       <div
         ref={modalRef}
-        className={'modalContent'}
+        className={'modal__content'}
       >
-        <div className={'modalHeader'}>
-          <h2>{title}</h2>
+        <div className={'modal__header'}>
+          <h2 className={'modal__title'}>{title}</h2>
           <div
-            className={'modalCloseButton'}
+            className={'modal__close-button'}
             onClick={onClose}
           >
             ✕
           </div>
         </div>
-        <div className={'modalBody'}>{children}</div>
+        <div className={'modal__body'}>{children}</div>
       </div>
     </div>
   );
