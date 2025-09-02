@@ -1,5 +1,5 @@
 import React, { useState } from "react";
- import {useNavigate } from 'react-router';
+import {useNavigate } from 'react-router';
 import {authApi} from '../../api/auth'
 import type { ApiResponse, LoginFinishResponse } from "../../api/types";
 
@@ -57,10 +57,8 @@ const Login: React.FC = () => {
 
     try {
       const response: ApiResponse<LoginFinishResponse> = await authApi.login(formData);
-      if (response.success) {
+      if (response.success && response.data) {
         const encryptSalt = response.data.encryptSalt;
-        // const accessToken = response.data.accessToken;
-        // localStorage.setItem("authToken", accessToken);
         console.log("encryptSalt", encryptSalt);
         setSuccessMessage("Registration successful!");
         setFormData(initialFormData);

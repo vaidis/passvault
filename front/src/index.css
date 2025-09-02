@@ -1,74 +1,46 @@
-:root {
-  --background-darker: hsl(0 0 5);
-  --background-dark: hsl(0 0 10);
-  --background: hsl(0 0 15);
-  --background-light: hsl(0 0 20);
-  --background-ligher: hsl(0 0 25);
-;
-  --foreground-dark: hsl(0 0 50);
-  --foreground: hsl(0 0 65);
-  --foreground-light: hsl(0 0 80);
-
-  --red: hsl(0 40 50);
-  --green: hsl(100 50 40);
-  --blue: hsl(220 60 50);
-  --yellow: hsl(60, 95%, 40%);
-  --black: hsl(0 0 0);
-
-  color: var(--text);
+body {
+  font-family: monospace;
+  color: var(--text-color);
   background-color: var(--background-darker);
-
-  /* font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale; */
+  /* place-items: center; */
 }
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: var(--blue);
   text-decoration: inherit;
 }
 a:hover {
-  color: #9095ff;
+  color: var(--blue-light);
 }
 
-body {
-
-  font-family: monospace;
-  /* line-height: 1.5; */
-  /* font-weight: 400; */
-
-  margin: 0;
-  /* display: flex; */
-  place-items: center;
-  /* min-width: 320px; */
-  /* min-height: 100vh; */
+input {
+  border-style: solid;
 }
 
-/* h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-} */
-
-/* button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
+button {
+  margin: 20px 0px 0px 0px;
+  padding: 10px 20px;
+  margin-left: auto;
+  border: none;
   cursor: pointer;
-  transition: border-color 0.25s;
+  color: var(--white);
+  background-color: var(--background-light);
+  border-color: var(--background-light);
+  border-radius: var(--border-radius);
+  border-width: var(--border-width);
 }
+
 button:hover {
-  border-color: #646cff;
+  background-color: var(--background-lighter);
 }
+
 button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-} */
+  background-color: var(--background-lighter);
+}
+
+/* dovaluegreece@dovaluegreece.gr */
 
 /* @media (prefers-color-scheme: light) {
   :root {
@@ -82,8 +54,6 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 } */
-
-
 
 /* .content {
   display: flex;
@@ -115,12 +85,12 @@ button:focus-visible {
   align-items: center;
 } */
 
-.title {
+/* .title {
   font-size: 1.2em;
   font-weight: bold;
   color: var(--foreground-dark);
   color: #000000;
-}
+} */
 
 .add {
   background-color: var(--green);
@@ -133,7 +103,7 @@ button:focus-visible {
   background-color: var(--green-light);
 }
 
-.profile {
+/* .profile {
   background-color: var(--blue);
   padding: 10px 20px;
   border-radius: 5px;

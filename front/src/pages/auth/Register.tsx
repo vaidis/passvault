@@ -81,6 +81,7 @@ const Register: React.FC = () => {
       keySize: 512 / 32,
       iterations: 10000
     }).toString(CryptoJS.enc.Hex);
+
     const body: RegisterData = {
       email,
       username,

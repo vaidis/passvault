@@ -3,8 +3,19 @@ import { RouterProvider } from 'react-router-dom';
 import { router } from './router';
 
 const App: React.FC = () => {
-  return <RouterProvider router={router} />;
+  return (
+    <div>
+      <div>
+        Header
+      </div>
+      <RouterProvider router={router} />
+    </div>
+);
 };
+
+// const App: React.FC = () => {
+//   return <RouterProvider router={router} />;
+// };
 
 export default App;
 
