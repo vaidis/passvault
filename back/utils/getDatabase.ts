@@ -3,6 +3,7 @@ import { JSONFile } from 'lowdb/node';
 
 export interface Item {
   id: number;
+  category: string;
   title: string;
   username: string;
   password: string;

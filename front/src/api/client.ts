@@ -98,12 +98,14 @@ export const put = async <TReq, TRes>(
   });
 };
 
-export const del = async <TReq, TRes>(
-  endpoint: string,
-  data: TReq,
+export const del = async <TRes>(
+  endpoint: string
 ): Promise<ApiResponse<TRes>> => {
   return apiRequest<TRes>(endpoint, {
-    method: "DELETE",
-    body: JSON.stringify(data),
+    method: "DELETE"
   });
 };
+
+// export function delete<T>(arg0: number): ApiResponse<null> | PromiseLike<ApiResponse<null>> {
+//   throw new Error('Function not implemented.');
+// }
