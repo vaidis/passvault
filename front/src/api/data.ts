@@ -10,16 +10,17 @@ export const dataApi = {
     return apiClient.get<DataItem>(`/data/${id}`);
   },
 
-  create: async (data: Omit<DataItem, 'id' | 'createdAt'>): Promise<ApiResponse<DataItem>> => {
-    return apiClient.post<DataItem>('/data', data);
+  create: async (data: Omit<DataItem, 'id' | 'created' | 'edited'>): Promise<ApiResponse<DataItem>> => {
+    console.log('data.ts > create > data:', data)
+    return apiClient.post('/data/add', data);
   },
 
   update: async (id: string, data: Partial<DataItems>): Promise<ApiResponse<DataItems>> => {
     return apiClient.put<DataItem>(`/data/${id}`, data);
   },
 
-  delete: async (id: string): Promise<ApiResponse<null>> => {
-    return apiClient.delete<null>(`/data/${id}`);
+  delete: async (id: number): Promise<ApiResponse<DataItems>> => {
+    return apiClient.del<DataItems>(`/data/delete/${id}`);
   },
 };
 
