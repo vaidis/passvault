@@ -54,7 +54,7 @@ export const isAuthenticated = (req: Request, res: Response, next: NextFunction 
 
     // Add user data to the request object
     req.user = decoded as JwtPayload;
-    console.log('🐞  authenticationMiddleware.ts > isAuthenticated: req.user: ', req.user);
+    console.log('🔒 authenticationMiddleware.ts > isAuthenticated: req.user: ', req.user);
 
     // Proceed to the next middleware/route handler
     next();
