@@ -1,0 +1,45 @@
+:root {
+  --background-darker: hsl(0 0 5);
+  --background-dark: hsl(0 0 10);
+  --background: hsl(0 0 15);
+  --background-light: hsl(0 0 20);
+  --background-lighter: hsl(0 0 25);
+
+  --foreground-dark: hsl(0 0 50);
+  --foreground: hsl(0 0 65);
+  --foreground-light: hsl(0 0 80);
+
+  --red-dark: hsl(338, 91%, 31%);
+  --red: hsl(338, 83%, 45%);
+  --red-light: hsl(338, 79%, 62%);
+
+  --green-dark: hsl(100, 80%, 25%);
+  --green: hsl(100 50 40);
+  --green-light: hsl(100, 78%, 40%);
+
+  --blue-dark: hsl(220, 96%, 32%);
+  --blue: hsl(220, 83%, 47%);
+  --blue-light: hsl(220, 73%, 52%);
+
+  --yellow: hsl(60, 95%, 40%);
+  --black: hsl(0 0 0);
+  --white: hsl(0 0 100);
+
+  --border-radius: 5px;
+  --border-width: 2px;
+
+  --text-size-label: 0.9em;
+  --text-size-error: 0.9em;
+  --text-color: var(var(--foreground));
+
+  --space-xsmall: 0.2em;
+  --space-small: 0.6em;
+  --space-medium: 1em;
+  --space-large: 2em;
+  --space-xlarge: 4em;
+
+  /* font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale; */
+}
