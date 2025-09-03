@@ -47,12 +47,14 @@ export interface RegisterResponse {
 export type DataItems = DataItem[];
 
 export type DataItem = {
+  id: number;
   title: string;
   username: string;
   password: string;
   notes: string;
   created: number;
   edited: number;
+  category: string;
 };
 
 // User
