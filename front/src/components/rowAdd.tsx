@@ -1,15 +1,17 @@
+import type { Dispatch, SetStateAction } from 'react';
 import React from 'react';
 import { dataApi } from '../api/data';
-import type { ApiResponse, DataItem } from '../api/types';
+import type { ApiResponse, DataItem, DataItems } from '../api/types';
 import Input from '../components/Input';
 
 // for mandaroty fields set min > 1
 // for optional fields set min = 0
 const fieldsConfig = {
-  title:    { label: "Title",    type: "text",     min: 1 },
-  username: { label: "Username", type: "text",     min: 1 },
-  password: { label: "Password", type: "password", min: 1 },
-  notes:    { label: "Notes",    type: "text",     min: 0 },
+  category: { label: "Category", type: "text", min: 1 },
+  title:    { label: "Title",    type: "text", min: 1 },
+  username: { label: "Username", type: "text", min: 1 },
+  password: { label: "Password", type: "text", min: 1 },
+  notes:    { label: "Notes",    type: "text", min: 0 },
 } as const;
 
 export type Data = {
@@ -18,14 +20,18 @@ export type Data = {
 
 type Field = keyof Data;
 
-export default function RowAdd({ closeModal }: { closeModal: () => void }) {
+export default function RowAdd({  setData, closeModal }: {
+  setData: Dispatch<SetStateAction<DataItems | null>>;
+  closeModal: () => void;
+}) {
 
   // the values must be encrypted before submit them!
   const [form, setForm] = React.useState<Data>({
-    title: '',
-    username: '',
-    password: '',
-    notes: '',
+    category: String(Date.now()),
+    title: String(Date.now()),
+    username: String(Date.now()),
+    password: String(Date.now()),
+    notes: String(Date.now()),
   });
 
   // create the field validity state,
@@ -58,15 +64,20 @@ export default function RowAdd({ closeModal }: { closeModal: () => void }) {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     // ready to submit?
     if (isDisabled) return;
     setIsSubmitting(true);
+
     try {
-      const res: ApiResponse<DataItem> = await dataApi.create(form);
-      if (!res.success) {
-        // global error banner
-        return;
+      console.log('rowAdd.tsx > handleSubmit > form:', form);
+      const response: ApiResponse<DataItem> = await dataApi.create(form);
+    if (response.success) {
+      const data = response.data;
+      if (data !== undefined) {
+        setData(data);
       }
+    }
       closeModal();
     } catch (err) {
       console.error(err);

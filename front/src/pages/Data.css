@@ -19,32 +19,32 @@
   padding: 5px;
 }
 
-.label {
+/* .label {
   color: var(--foreground-light);
   padding: 5px;
   font-size: 1.6em;
-}
+} */
 
-.notes {
+/* .notes {
   color: var(--yellow);
   padding: 5px;
   font-size: 0.8em;
-}
+} */
 
-.username,
+/* .username,
 .password {
   display: flex;
   flex-direction: row;
   font-family: 'Courier New', Courier, monospace;
   color: var(--foreground-dark);
   padding: 5px;
-}
+} */
 
-.password {
+/* .password {
   font-family: 'Courier New', Courier, monospace;
   color: var(--foreground-dark);
   padding: 5px;
-}
+} */
 
 .menu {
   align-self: flex-start;

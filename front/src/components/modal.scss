@@ -8,7 +8,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: var(--space-medium);
 
   &__overlay {
     position: fixed;
@@ -22,19 +22,19 @@
   &__content {
     position: relative;
     background-color: var(--background);
-    border-radius: 5px;
+    border-radius: var(--border-radius);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     width: 500px;
     margin: 0 auto;
     z-index: 1001;
-    padding: 40px;
+    padding: var(--space-large);
   }
 
   &__header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: var(--space-large);
   }
 
   &__title {
@@ -48,7 +48,7 @@
     background: none;
     color: var(--red);
     border: none;
-    border-radius: 5px;
+    border-radius: var(--border-radius);
     cursor: pointer;
     font-size: 20px;
     font-weight: bold;

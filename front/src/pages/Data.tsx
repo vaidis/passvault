@@ -10,7 +10,7 @@ import RowEdit from '../components/rowEdit';
 import "./Data.css";
 
 const Data: React.FC = () => {
-  const [data, setData] = React.useState<DataItems>([]);
+  const [data, setData] = React.useState<DataItems | null>(null);
   const [isLoading, setLoading] = React.useState<boolean>(true);
   const [actionsIndex, setActionsIndex] = React.useState<number | null>(null);
   const [isCopied, setCopied] = React.useState<boolean>(false);
@@ -52,31 +52,31 @@ const Data: React.FC = () => {
   }
 
   const addHandler = () => {
-   setModalTitle('Add Password');
-   setModalContent(<RowAdd user={user} setData={setData} closeModal={closeModal} />);
-   openModal();
+    setModalTitle('Add Password');
+    setModalContent(<RowAdd setData={setData} closeModal={closeModal} />);
+    openModal();
   }
 
   const editHandler = (row: DataItem) => {
-   setModalTitle('Edit Password');
-   setModalContent(<RowEdit row={row} user={user} setData={setData} closeModal={closeModal} />);
-   openModal();
+    setModalTitle('Edit Password');
+    setModalContent(<RowEdit row={row} setData={setData} closeModal={closeModal} />);
+    openModal();
   }
-  
-  const deleteHandler = async (row:DataItem) => {
-   setModalTitle('Delete Password');
-   setModalContent(<RowDelete row={row} user={user} setData={setData} closeModal={closeModal} />);
-   openModal();
+
+  const deleteHandler = async (row: DataItem) => {
+    setModalTitle('Delete Password');
+    setModalContent(<RowDelete row={row} setData={setData} closeModal={closeModal} />);
+    openModal();
   }
 
   // send password to clipboard
   const copyHandler = (event: React.MouseEvent<HTMLElement>, password: string) => {
-   event.stopPropagation()
-   setCopied(true);
-   navigator.clipboard.writeText(password);
-   setTimeout(function() {
-     setCopied(false)
-   }, 500);
+    event.stopPropagation()
+    setCopied(true);
+    navigator.clipboard.writeText(password);
+    setTimeout(function () {
+      setCopied(false)
+    }, 500);
   }
 
   if (isLoading) {
@@ -118,15 +118,17 @@ const Data: React.FC = () => {
           /* list data */
         }
         {
-          data && data.map((row:DataItem, index:number) => (
+          data && data.map((row: DataItem, index: number) => (
             <div className={'row'} key={index} onClick={() => toggleActions(index)} >
               <div className={'card'}>
                 <div className={'data'}>
+                  <div className={'category'}>{row.category}</div>
                   <div className={'label'}>{row.title}</div>
                   <div className={'username'}>{row.username}</div>
                   <div className={'password'}>{row.password}</div>
                   {
-                    row.notes && <div className={'notes'}>{row.notes}</div>
+                    row.notes &&
+                      <div className={'notes'}>{row.notes}</div>
                   }
                 </div>
                 <div className={'menu'} style={{ cursor: 'pointer' }}>
@@ -136,9 +138,14 @@ const Data: React.FC = () => {
                 /* action buttons */
               }
               <div className={`${'actions'} ${actionsIndex === index ? 'show' : ''}`}>
+                <div className={'copy'} onClick={(event) => copyHandler(event, row.username)} >
+                  <div className={'actionLabel'}>
+                    {isCopied ? 'Copied!' : 'Copy Username'}
+                  </div>
+                </div>
                 <div className={'copy'} onClick={(event) => copyHandler(event, row.password)} >
                   <div className={'actionLabel'}>
-                    {isCopied ? 'Copied!' : 'Copy'}
+                    {isCopied ? 'Copied!' : 'Copy Password'}
                   </div>
                 </div>
                 <div className={'edit'} onClick={() => editHandler(row)} >
