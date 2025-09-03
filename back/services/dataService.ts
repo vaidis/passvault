@@ -3,11 +3,13 @@ import { getDataDB } from '../utils/getDatabase';
 
 export interface Item {
   id: number;
+  category: string;
   title: string;
   username: string;
   password: string;
   notes: string;
   order: number;
+  // categories: string[];
 }
 
 export interface Items {
@@ -32,7 +34,7 @@ async function getData(username:string): Promise<Item[]> {
 
   // send all data
   const { items } = db.data;
-  const data = items.sort((a:Item, b:Item) => a.title.localeCompare(b.title))
+  const data = items.sort((a:Item, b:Item) => a.category.localeCompare(b.category))
   return data;
 }
 
@@ -136,19 +138,23 @@ export async function editRow (username: string, rowId: Number, row: Item) {
   }
 }
 
-export async function newRow (username: string, row: Item) {
+export async function addRow (username: string, row: Item) {
+  console.log('🍒 dataService.ts > addData > row:', row);
   try {
     // get database
     const db = await getDataDB(username);
 
     // Create the updated item
     const newItem = {
-      id: row.id || Date.now(),
+      id: Date.now(),
+      category: row.category,
       title: row.title,
       username: row.username,
       password: row.password,
       notes: row.notes || '',
-      order: row.order || 0
+      order: row.order || 0 ,
+      created: Date.now(),
+      edited: Date.now()
     };
 
     // update

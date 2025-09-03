@@ -6,7 +6,7 @@ import {
   getData,
   deleteData,
   editData,
-  newData
+  addData
 } from '../controllers/dataController';
 
 const router = express.Router();
@@ -17,9 +17,9 @@ router.use(isAuthenticated);
 // Public routes (just authenticated)
 //router.get('/:username', isAuthorized, getData);
 router.get('/', getData);
-router.post('/:username/new', isAuthorized, newData)
-router.post('/:username/edit/:rowId', isAuthorized, editData)
-router.post('/:username/delete/:row', isAuthorized, deleteData)
+router.post('/add', isAuthorized, addData)
+router.post('/edit/:rowId', isAuthorized, editData)
+router.delete('/delete/:id', isAuthorized, deleteData)
 
 export const dataRouter = router;
 
