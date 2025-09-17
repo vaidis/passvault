@@ -1,8 +1,10 @@
 import React from "react";
-import {useNavigate } from 'react-router';
-import {authApi} from '../../api/auth'
+import { useNavigate } from 'react-router';
+// import { authApi } from '../../api/auth'
+import { useAuth } from '../../AuthContext';
 
 const Logout = () => {
+  const { logout } = useAuth();
   const navigate = useNavigate();
   const [status, setStatus] = React.useState<'idle' | 'ok' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
@@ -11,18 +13,31 @@ const Logout = () => {
   React.useEffect(() => {
     (async () => {
       try {
-        const response = await authApi.logout();
-        if (response.success) {
-          setStatus('ok');
-          setSuccessMessage(response.message ?? 'Logout successful');
-        }
+        const response = await logout();
+        if (response.success) navigate('/auth/login');
       } catch (error) {
         setStatus('error');
-        setErrorMessage(error instanceof Error ? error.message: 'Logout failed');
+        setErrorMessage(error instanceof Error ? error.message : 'Logout failed');
       }
     })();
     return;
-  }, [navigate]);
+  }, []);
+
+  // React.useEffect(() => {
+  //   (async () => {
+  //     try {
+  //       const response = await authApi.logout();
+  //       if (response.success) {
+  //         setStatus('ok');
+  //         setSuccessMessage(response.message ?? 'Logout successful');
+  //       }
+  //     } catch (error) {
+  //       setStatus('error');
+  //       setErrorMessage(error instanceof Error ? error.message: 'Logout failed');
+  //     }
+  //   })();
+  //   return;
+  // }, [navigate]);
 
   if (status === 'ok') {
     return (

@@ -7,6 +7,7 @@ import type {
   LoginStartResponse,
   LoginFinishRequest,
   LoginFinishResponse,
+  LogoutResponse,
   RegisterData,
   RegisterResponse,
 } from "./types";
@@ -21,11 +22,20 @@ const endpoint = {
   loginStart: "/auth/login/start",
   loginFinish: "/auth/login/finish",
   logout: '/auth/logout',
-  refresh: '/auth/refresh'
+  refresh: '/auth/refresh',
+  user: '/auth/user'
 }
 
 
 export const authApi = {
+  //
+  // Get User
+  //
+  getUser: async (): Promise<ApiResponse<{username:string;id:number}>> => {
+    console.log(' 🍓 auth.ts > getUser');
+    return apiClient.get<{username:string;id:number}>(endpoint.user);
+  },
+
   //
   // Register
   //
@@ -86,8 +96,67 @@ export const authApi = {
   //
   // Logout
   //
-  logout: async (): Promise<ApiResponse<null>> => {
-    console.log(' 🍓 auth.ts > logout');
-    return apiClient.get<null>(endpoint.logout);
+  logout: async (): Promise<ApiResponse<LogoutResponse>> => {
+    return apiClient.get<LogoutResponse>(endpoint.logout);
   },
 };
+
+
+// export type ApiResponse<TData> =
+//   | { success: true; message?: string; data?: TData }
+//   | { success: false; message?: string };
+
+// export type LogoutResponse = null
+
+
+// export const authApi = {
+//   logout: async (): Promise<ApiResponse<LogoutResponse>> => {
+//     return apiClient.get<ApiResponse<LogoutResponse>>(endpoint.logout);
+//   },
+// };
+
+
+// export const get = <TRes>(endpoint: string): Promise<ApiResponse<TRes>> => {
+//   return apiRequest<TRes>(endpoint, {
+//     method: "GET",
+//   });
+// };
+
+// async function apiRequest<TResponse>(
+//   endpoint: string,
+//   options: RequestInit = {},
+// ): Promise<ApiResponse<TResponse>> {
+//   const config: RequestInit = {
+//     credentials: "include",
+//     headers: {
+//       "Content-Type": "application/json",
+//       "Accept": "application/json"
+//     },
+//     ...options,
+//   };
+//   const url = `${API_BASE_URL}${endpoint}`;
+//   const response = await fetch(url, config);
+//   const json = (await response.json()) as ApiResponse<null>;
+//   if (json.success === false) {
+//     // try to refresh the access token
+//     const responseRefresh = await fetch(pathRefreshToken, {
+//       credentials: "include",
+//       headers: { "Content-Type": "application/json" },
+//       method: "POST",
+//     });
+//     const json = (await responseRefresh.json()) as ApiResponse<null>;
+//     // repeat the last fetch with new tokens
+//     if (json.success === true) {
+//       const response = await fetch(url, config);
+//       const json = (await response.json()) as ApiResponse<null>;
+//       return json as ApiResponse<TResponse>;
+//     } else {
+//       return {
+//         success: false,
+//         message: `Request failed with status ${response.status}`,
+//       };
+//     }
+//   }
+//   // no refresh token needed
+//   return json as ApiResponse<TResponse>;
+// }

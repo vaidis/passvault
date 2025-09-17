@@ -20,14 +20,7 @@ export default function RowEdit({ row, user, setData, closeModal }: { row: DataI
     setIsPending(true);
 
     try {
-      const res = await apiFetchWithRefresh(URL, {
-        method: 'POST',
-        body: JSON.stringify(formData),
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-      });
+      const res = {}
       if (!res.success) {
         console.error('Failed to save changes:', res.message);
         return;

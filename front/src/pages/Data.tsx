@@ -7,13 +7,13 @@ import RowAdd from '../components/rowAdd';
 import RowDelete from '../components/rowDelete';
 import RowEdit from '../components/rowEdit';
 
-import "./Data.css";
+import "./Data.scss";
 
 const Data: React.FC = () => {
   const [data, setData] = React.useState<DataItems | null>(null);
   const [isLoading, setLoading] = React.useState<boolean>(true);
   const [actionsIndex, setActionsIndex] = React.useState<number | null>(null);
-  const [isCopied, setCopied] = React.useState<boolean>(false);
+  const [isCopied, setCopied] = React.useState<string>('');
 
   //const [status, setStatus] = React.useState<'idle' | 'ok' | 'error'>('idle');
 
@@ -57,12 +57,6 @@ const Data: React.FC = () => {
     openModal();
   }
 
-  const editHandler = (row: DataItem) => {
-    setModalTitle('Edit Password');
-    setModalContent(<RowEdit row={row} setData={setData} closeModal={closeModal} />);
-    openModal();
-  }
-
   const deleteHandler = async (row: DataItem) => {
     setModalTitle('Delete Password');
     setModalContent(<RowDelete row={row} setData={setData} closeModal={closeModal} />);
@@ -72,10 +66,10 @@ const Data: React.FC = () => {
   // send password to clipboard
   const copyHandler = (event: React.MouseEvent<HTMLElement>, password: string) => {
     event.stopPropagation()
-    setCopied(true);
+    setCopied(password);
     navigator.clipboard.writeText(password);
     setTimeout(function () {
-      setCopied(false)
+      setCopied('')
     }, 500);
   }
 
@@ -101,12 +95,12 @@ const Data: React.FC = () => {
         /* Add new password button */
       }
       <header className={'header'}>
-        <div className={'brand'}>
-          <div className={'title'}>PassVault</div>
+        <div className={'header__brand'}>
+          <div className={'header__title'}>PassVault</div>
         </div>
-        <div className={'menu'}>
-          <div className={'add'} onClick={() => addHandler()}>
-            A
+        <div className={'header__menu'}>
+          <div className={'header__add'} onClick={() => addHandler()}>
+            Add new item
           </div>
         </div>
       </header>
@@ -119,45 +113,55 @@ const Data: React.FC = () => {
         }
         {
           data && data.map((row: DataItem, index: number) => (
-            <div className={'row'} key={index} onClick={() => toggleActions(index)} >
-              <div className={'card'}>
-                <div className={'data'}>
-                  <div className={'category'}>{row.category}</div>
-                  <div className={'label'}>{row.title}</div>
-                  <div className={'username'}>{row.username}</div>
-                  <div className={'password'}>{row.password}</div>
+            <div className={'item'} key={index} onClick={() => toggleActions(index)} >
+              <div className={'item__card'}>
+                <div className={'item__data'}>
+                  <div className={'item__field item__field--category'}><label>Category:</label> {row.category}</div>
+                  <div className={'item__field item__field--label'}><label>Title:</label> {row.title}</div>
+                  <div className={'item__field item__field--username'}><label>Username:</label> {row.username}</div>
+                  <div className={'item__field item__field--password'}><label>Password:</label> {row.password}</div>
                   {
                     row.notes &&
-                      <div className={'notes'}>{row.notes}</div>
+                      <div className={'item__field item__field--notes'}>Notes: {row.notes}</div>
                   }
                 </div>
-                <div className={'menu'} style={{ cursor: 'pointer' }}>
+                <div className={'item__menu'} style={{ cursor: 'pointer' }}>
                 </div>
               </div>
               {
                 /* action buttons */
               }
-              <div className={`${'actions'} ${actionsIndex === index ? 'show' : ''}`}>
-                <div className={'copy'} onClick={(event) => copyHandler(event, row.username)} >
-                  <div className={'actionLabel'}>
-                    {isCopied ? 'Copied!' : 'Copy Username'}
-                  </div>
-                </div>
-                <div className={'copy'} onClick={(event) => copyHandler(event, row.password)} >
-                  <div className={'actionLabel'}>
-                    {isCopied ? 'Copied!' : 'Copy Password'}
-                  </div>
-                </div>
-                <div className={'edit'} onClick={() => editHandler(row)} >
-                  <div className={'actionLabel'}>
-                    Edit
-                  </div>
-                </div>
-                <div className={'delete'} onClick={() => deleteHandler(row)} >
-                  <div className={'actionLabel'}>
-                    Delete
-                  </div>
-                </div>
+              <div className={`${'item__actions'} ${actionsIndex === index ? 'show' : ''}`}>
+                <button
+                  type="button"
+                  className="item__action item__action--copy-username"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    copyHandler(e, row.username);
+                  }}
+                >
+                  {isCopied === row.username  ? 'Copied!' : 'Copy Username'}
+                </button>
+                <button
+                  type="button"
+                  className="item__action item__action--copy-password"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    copyHandler(e, row.password);
+                  }}
+                >
+                  {isCopied === row.password ? 'Copied!' : 'Copy password'}
+                </button>
+                <button
+                  type="button"
+                  className="item__action item__action--delete"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    deleteHandler(row);
+                  }}
+                >
+                  Delete
+                </button>
               </div>
             </div>
           ))}

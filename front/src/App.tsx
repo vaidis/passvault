@@ -1,21 +1,18 @@
 import React from 'react';
-import { RouterProvider } from 'react-router-dom';
-import { router } from './router';
+import { BrowserRouter } from "react-router-dom";
+import { AuthProvider } from './AuthContext';
+import { Header } from '../src/components/Header';
+import AppRoutes from './router/AppRoutes';
 
 const App: React.FC = () => {
   return (
-    <div>
-      <div>
-        Header
-      </div>
-      <RouterProvider router={router} />
-    </div>
-);
+    <BrowserRouter>
+      <AuthProvider>
+        <Header />
+        <AppRoutes />
+      </AuthProvider>
+    </BrowserRouter>
+  );
 };
 
-// const App: React.FC = () => {
-//   return <RouterProvider router={router} />;
-// };
-
 export default App;
-

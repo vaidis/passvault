@@ -359,6 +359,9 @@ const refresh = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
+
+
+
 //
 // GET /auth/user
 //
@@ -366,7 +369,7 @@ const user = async (req: Request, res: Response): Promise<void> => {
   const accessToken = req.cookies.accessToken;
 
   if (!accessToken) {
-    res.sendStatus(401);
+    res.status(401).json({ success: false, error: 'Token missing' });
     return;
   }
 
@@ -380,15 +383,16 @@ const user = async (req: Request, res: Response): Promise<void> => {
     }
 
     // Now TypeScript knows decodedToken is a JwtPayload
-    if (!decodedToken.username || !decodedToken.role) {
+    if (!decodedToken.username) {
       res.status(401).json({ success: false, error: 'Missing user information in token' });
       return;
     }
 
     res.json({
       success: true,
-      username: decodedToken.username,
-      role: decodedToken.role
+      data: {
+        username: decodedToken.username
+      }
     });
   } catch (err) {
     res.status(403).json({ error: 'No valid token' });

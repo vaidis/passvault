@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import {useNavigate } from 'react-router';
-import {authApi} from '../../api/auth'
-import type { ApiResponse, LoginFinishResponse } from "../../api/types";
+// import {authApi} from '../../api/auth'
+// import type { ApiResponse, LoginFinishResponse } from "../../api/types";
+import { useAuth } from '../../AuthContext';
+
 
 type FormData = {
   username: string;
@@ -14,6 +16,8 @@ const initialFormData: FormData = {
 };
 
 const Login: React.FC = () => {
+  console.log('Login.tsx');
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState<FormData>(initialFormData);
@@ -56,17 +60,18 @@ const Login: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      const response: ApiResponse<LoginFinishResponse> = await authApi.login(formData);
-      if (response.success && response.data) {
-        const encryptSalt = response.data.encryptSalt;
-        console.log("encryptSalt", encryptSalt);
-        setSuccessMessage("Registration successful!");
-        setFormData(initialFormData);
-        setRedirectCountdown(3);
-        // redirect / UI update...
-      } else {
-        setErrorMessage(response.error.message);
-      }
+      const ok = await login(formData.username, formData.password);
+      if (ok) navigate('/data');
+      // const response: ApiResponse<LoginFinishResponse> = await authApi.login(formData);
+      // if (response.success && response.data) {
+      //   const encryptSalt = response.data.encryptSalt;
+      //   console.log("encryptSalt", encryptSalt);
+      //   setSuccessMessage("Registration successful!");
+      //   setFormData(initialFormData);
+      //   setRedirectCountdown(1);
+      // } else {
+      //   setErrorMessage(response.error.message);
+      // }
     } catch (error) {
       console.log('error:', error);
     }

@@ -17,6 +17,11 @@
   --green: hsl(100 50 40);
   --green-light: hsl(100, 78%, 40%);
 
+  --petrol-dark: hsl(164, 80%, 25%);
+  --petrol: hsl(164, 50%, 40%);
+  --petrol-light: hsl(164, 78%, 40%);
+
+
   --blue-dark: hsl(220, 96%, 32%);
   --blue: hsl(220, 83%, 47%);
   --blue-light: hsl(220, 73%, 52%);
@@ -30,7 +35,7 @@
 
   --text-size-label: 0.9em;
   --text-size-error: 0.9em;
-  --text-color: var(var(--foreground));
+  --text-color: var(--foreground);
 
   --space-xsmall: 0.2em;
   --space-small: 0.6em;

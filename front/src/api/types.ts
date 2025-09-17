@@ -3,6 +3,8 @@ export type ApiResponse<TData> =
   | { success: true; message?: string; data?: TData }
   | { success: false; message?: string };
 
+export type LogoutResponse = null
+
 // Login
 export type LoginCredentials = {
   username: string;
