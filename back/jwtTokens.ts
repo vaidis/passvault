@@ -14,7 +14,7 @@ export function generateAccessToken(payload: object) {
 
 export function generateRefreshToken(payload: object) {
   console.log('🔑 jwtTokens.ts > Generate new refresh token');
-  return jwt.sign(payload, REFRESH_TOKEN_SECRET as string, { expiresIn: '60m' });
+  return jwt.sign(payload, REFRESH_TOKEN_SECRET as string, { expiresIn: '30m' });
 }
 
 export function verifyAccessToken(payload: string) {

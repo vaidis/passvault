@@ -16,7 +16,7 @@ router.use(isAuthenticated);
 
 // Public routes (just authenticated)
 //router.get('/:username', isAuthorized, getData);
-router.get('/', getData);
+router.get('/', isAuthorized, getData);
 router.post('/add', isAuthorized, addData)
 router.post('/edit/:rowId', isAuthorized, editData)
 router.delete('/delete/:id', isAuthorized, deleteData)

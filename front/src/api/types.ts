@@ -1,9 +1,15 @@
 // Api
 export type ApiResponse<TData> =
-  | { success: true; message?: string; data?: TData }
+  | { success: true; message?: string; data?: TData, iat?: number, exp?: number }
   | { success: false; message?: string };
 
 export type LogoutResponse = null
+
+export type Stats = {
+  cpus: number;
+  totalmem: number,
+  freemem: number
+}
 
 // Login
 export type LoginCredentials = {

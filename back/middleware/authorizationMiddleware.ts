@@ -33,7 +33,8 @@ export const isAuthorized = (req: Request, res: Response, next: NextFunction): v
     // }
 
     // User is authorized, proceed to the route handler
-    next();
+    // next();
+      setTimeout(next,2000);
 
   } catch (error: unknown) {
     if (error instanceof Error) {

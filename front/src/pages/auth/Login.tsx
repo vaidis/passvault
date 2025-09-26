@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-import {useNavigate } from 'react-router';
-// import {authApi} from '../../api/auth'
-// import type { ApiResponse, LoginFinishResponse } from "../../api/types";
+import { useNavigate } from 'react-router';
 import { useAuth } from '../../AuthContext';
-
+import './Login.scss';
 
 type FormData = {
   username: string;
@@ -53,6 +51,9 @@ const Login: React.FC = () => {
     }
   };
 
+
+
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage("");
@@ -62,50 +63,45 @@ const Login: React.FC = () => {
     try {
       const ok = await login(formData.username, formData.password);
       if (ok) navigate('/data');
-      // const response: ApiResponse<LoginFinishResponse> = await authApi.login(formData);
-      // if (response.success && response.data) {
-      //   const encryptSalt = response.data.encryptSalt;
-      //   console.log("encryptSalt", encryptSalt);
-      //   setSuccessMessage("Registration successful!");
-      //   setFormData(initialFormData);
-      //   setRedirectCountdown(1);
-      // } else {
-      //   setErrorMessage(response.error.message);
-      // }
     } catch (error) {
       console.log('error:', error);
     }
   };
 
+
+
+
   return (
-    <form onSubmit={handleSubmit} style={{ maxWidth: 400, margin: "0 auto" }}>
-      <h2>Login</h2>
-      {["username", "password"].map((field) => (
-        <div key={field} style={{ marginBottom: "1em" }}>
-          <label>{capitalize(field)}
+    <div className="login">
+      <form onSubmit={handleSubmit} style={{ maxWidth: 400, margin: "0 auto" }}>
+        <h2 className="form__title">Login</h2>
+        {["username", "password"].map((field) => (
+          <div key={field} className="form__field">
+            <label className="form__label">{capitalize(field)}</label>
             <input
+              className="form__input"
               type={field.includes("password") ? "password" : "text"}
               name={field}
               value={(formData as any)[field]}
               onChange={handleChange}
               required
             />
-          </label>
-        </div>
-      ))}
-      <button type="submit" disabled={isSubmitting}>
-        {isSubmitting ? "Login..." : "Login"}
-      </button>
-      {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
-      {successMessage && (
-        <p style={{ color: "green" }}>
-          {successMessage}
-          {redirectCountdown !== null && (
-            <span> Redirecting in {redirectCountdown}...</span>
-          )}
-        </p>
-      )}
-    </form>
+          </div>
+        ))}
+        <button type="submit" disabled={isSubmitting} className="form__button">
+          {isSubmitting ? "Login..." : "Login"}
+        </button>
+        {errorMessage && <p className="form__message form__message--error">{errorMessage}</p>}
+        {successMessage && (
+          <p className="form__message form__message--success">
+            {successMessage}
+            {redirectCountdown !== null && (
+              <span> Redirecting in {redirectCountdown}...</span>
+            )}
+          </p>
+        )}
+      </form>
+    </div>
   );
 };
 

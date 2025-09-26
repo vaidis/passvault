@@ -2,12 +2,13 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import bodyParser from 'body-parser';
-import { rateLimit } from 'express-rate-limit'
 import cookieParser from 'cookie-parser';
+import { rateLimit } from 'express-rate-limit'
 
 import { authRouter } from './routes/authRoutes';
 import { dataRouter } from './routes/dataRoutes';
 import { userRouter } from './routes/userRoutes';
+import { statsRouter } from './routes/statsRoutes';
 
 const PORT = 3001;
 
@@ -35,6 +36,7 @@ app.use(bodyParser.json());
 app.use('/auth', authRouter);
 app.use('/data', dataRouter);
 app.use('/user', userRouter);
+app.use('/stats', statsRouter);
 
 // App
 const server = app.listen(PORT, () => {

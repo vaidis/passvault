@@ -2,7 +2,10 @@ body {
   font-family: monospace;
   color: var(--text-color);
   background-color: var(--background-darker);
-  /* place-items: center; */
+}
+
+main {
+  place-items: center;
 }
 
 a {
@@ -14,9 +17,47 @@ a:hover {
   color: var(--blue-light);
 }
 
-input {
+.form {
+  max-width: 400px;
+}
+/* FORM */
+.form__title {
+    text-align: center;
+}
+
+.form__field {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.form__label {
+  margin-top: var(--space-large);
+  margin-bottom: var(--space-medium);
+}
+
+.form__input {
+  padding: var(--space-xsmall);
   border-style: solid;
 }
+
+.form__button {
+  align-self: center;
+}
+
+.form__messages {
+  margin-top: var(--space-large);
+  margin-bottom: var(--space-large);
+}
+
+.form__message--error {
+  color: var(--red);
+}
+
+.form__message--success {
+  color: var(--green);
+}
+
 
 button {
   margin: 20px 0px 0px 0px;

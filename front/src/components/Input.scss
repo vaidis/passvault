@@ -15,6 +15,7 @@
     border-color: var(--background);
     border-width: var(--border-width);
     border-radius: var(--border-radius);
+    border-style: solid;
 
     &:focus {
       outline: none;

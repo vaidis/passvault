@@ -5,7 +5,6 @@ import type { DataItem, DataItems } from "../api/types";
 import Modal from '../components/Modal';
 import RowAdd from '../components/rowAdd';
 import RowDelete from '../components/rowDelete';
-import RowEdit from '../components/rowEdit';
 
 import "./Data.scss";
 
@@ -33,6 +32,7 @@ const Data: React.FC = () => {
           const data = response.data;
           if (data !== undefined) {
             setData(data);
+            setLoading(false);
           }
           //setSuccessMessage(response.message ?? 'Logout successful');
         }
@@ -41,7 +41,6 @@ const Data: React.FC = () => {
         //setErrorMessage(error instanceof Error ? error.message: 'Logout failed');
       }
     })();
-    setLoading(false);
     return;
   }, []);
 
@@ -74,9 +73,11 @@ const Data: React.FC = () => {
   }
 
   if (isLoading) {
-    <div>
-      Loading...
-    </div>
+    return (
+      <div>
+        Loading...
+      </div>
+    )
   }
 
   return (
@@ -122,7 +123,7 @@ const Data: React.FC = () => {
                   <div className={'item__field item__field--password'}><label>Password:</label> {row.password}</div>
                   {
                     row.notes &&
-                      <div className={'item__field item__field--notes'}>Notes: {row.notes}</div>
+                    <div className={'item__field item__field--notes'}>Notes: {row.notes}</div>
                   }
                 </div>
                 <div className={'item__menu'} style={{ cursor: 'pointer' }}>
@@ -140,7 +141,7 @@ const Data: React.FC = () => {
                     copyHandler(e, row.username);
                   }}
                 >
-                  {isCopied === row.username  ? 'Copied!' : 'Copy Username'}
+                  {isCopied === row.username ? 'Copied!' : 'Copy Username'}
                 </button>
                 <button
                   type="button"

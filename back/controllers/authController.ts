@@ -260,20 +260,22 @@ const loginFinish = async (req: Request, res: Response): Promise<void> => {
     httpOnly: process.env.NODE_ENV === 'production',
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
-    maxAge: 60 * 60 * 1000,  // 60 minutes
+    maxAge: 5 * 59 * 1000,  // 5 minutes
   });
 
   res.cookie('refreshToken', refreshToken, {
     httpOnly: process.env.NODE_ENV === 'production',
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    maxAge: 29 * 60 * 1000, // 15 minutes
   });
 
   // respond successfully
   res.json({
     success: true,
     message: `Hello ${username}`,
+    iat: Date.now(),
+    exp: Date.now() + (5 * 59 * 1000),
     data: {
       encryptSalt: user.encryptSalt,
     }
