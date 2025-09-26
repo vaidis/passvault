@@ -10,6 +10,7 @@ export const Header: React.FC = () => {
   const { isAuthenticated } = useAuth();
   return (
     <div className="header">
+      <h1>PV</h1>
       <Status />
       {isAuthenticated && (
         <>

@@ -72,18 +72,42 @@ async function getDiskStats(pathToCheck = "/"): Promise<DiskStats> {
     return { total, used, free, avail };
 }
 
+function formatUptime(seconds: number): string {
+  const days = Math.floor(seconds / (24 * 3600));
+  seconds %= 24 * 3600;
+
+  const hours = Math.floor(seconds / 3600);
+  seconds %= 3600;
+
+  const minutes = Math.floor(seconds / 60);
+  // seconds = Math.floor(seconds % 60);
+
+  let parts: string[] = [];
+  if (days > 0) parts.push(`${days}d`);
+  if (hours > 0) parts.push(`${hours}h`);
+  if (minutes > 0) parts.push(`${minutes}m`);
+  // if (seconds > 0 || parts.length === 0) parts.push(`${seconds}s`);
+
+  return parts.join(" ");
+}
+
 export const getStats = async (req: Request, res: Response): Promise<void> => {
     try {
         const disk = await getDiskStats("/");
-
-        const response = {
+        const avg_load = os.loadavg();
+        const data = {
             diskTotal: disk.total,
             diskFree: disk.free,
             diskAvail: disk.avail,                    // όλα σε bytes
             memoryTotal: os.totalmem(), // bytes
             memoryFree: os.freemem(),   // bytes
-            sysUptime: os.uptime(),     // seconds
-            cpuLoadAavg: os.loadavg(),   // [1m, 5m, 15m]
+            sysUptime: formatUptime(os.uptime()),     // seconds
+            cpuLoadAavg: String(avg_load[1])   // [1m, 5m, 15m]
+        };
+
+        const response = {
+          success: true,
+          data: data
         };
 
         res.json(response);

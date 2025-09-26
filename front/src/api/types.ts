@@ -8,7 +8,13 @@ export type LogoutResponse = null
 export type Stats = {
   cpus: number;
   totalmem: number,
-  freemem: number
+  freemem: number,
+  diskTotal: number,
+  diskFree: number,
+  memoryTotal: number,
+  memoryFree: number,
+  sysUptime: number,
+  cpuLoadAavg: number,
 }
 
 // Login
