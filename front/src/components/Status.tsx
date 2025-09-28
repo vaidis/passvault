@@ -1,6 +1,7 @@
 import React from 'react';
 import { statsApi } from "../api/stats";
 import type { Stats } from '../api/types';
+import './Status.scss';
 
 function formatBytes(bytes: number): string {
   const MB = 1024 * 1024;
@@ -17,7 +18,7 @@ function formatBytes(bytes: number): string {
 
 const Status: React.FC = () => {
   const [data, setData] = React.useState<Stats | null>(null);
-  const intervalMs = 2000;
+  const intervalMs = 5000;
 
   React.useEffect(() => {
     let cancelled = false;
@@ -40,7 +41,7 @@ const Status: React.FC = () => {
       }
     };
 
-    tick(); // πρώτη κλήση τώρα
+    tick();
 
     return () => {
       cancelled = true;
@@ -50,22 +51,25 @@ const Status: React.FC = () => {
 
 
   return (
-    <div>
-      <h1>Status:</h1>
+    <div className='stats'>
       {
         data?.diskTotal &&
         data?.diskFree &&
-        <div>DSK {formatBytes(data.diskTotal)}({formatBytes(data.diskFree)})</div>
+        <div>DSK {formatBytes(data.diskFree)}({formatBytes(data.diskTotal)})</div>
       }
-
       {
         data?.memoryTotal  &&
         data?.memoryFree &&
-        <div>MEM {formatBytes(data.memoryTotal)}({formatBytes(data.memoryFree)})</div>
+        <div>MEM {formatBytes(data.memoryFree)}({formatBytes(data.memoryTotal)})</div>
       }
-
-      {data?.sysUptime  && <div>UPT {data.sysUptime}</div>}
-      {data?.cpuLoadAavg  && <div>CPU {data.cpuLoadAavg}%</div>}
+      {
+        data?.sysUptime  &&
+        <div>UPT {data.sysUptime}</div>
+      }
+      {
+        data?.cpuLoadAavg  &&
+        <div>CPU {data.cpuLoadAavg}%</div>
+      }
     </div>
   );
 };

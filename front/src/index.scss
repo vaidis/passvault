@@ -19,44 +19,37 @@ a:hover {
 
 .form {
   max-width: 400px;
+
+  &__title {
+      text-align: center;
+  }
+
+  &__field {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+  }
+
+  &__button {
+    align-self: center;
+  }
+
+  &__messages {
+    margin-top: var(--space-large);
+    margin-bottom: var(--space-large);
+  }
+
+  &__message--error {
+    color: var(--red);
+  }
+
+  &__message--success {
+    color: var(--green);
+  }
+
+
 }
 /* FORM */
-.form__title {
-    text-align: center;
-}
-
-.form__field {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.form__label {
-  margin-top: var(--space-large);
-  margin-bottom: var(--space-medium);
-}
-
-.form__input {
-  padding: var(--space-xsmall);
-  border-style: solid;
-}
-
-.form__button {
-  align-self: center;
-}
-
-.form__messages {
-  margin-top: var(--space-large);
-  margin-bottom: var(--space-large);
-}
-
-.form__message--error {
-  color: var(--red);
-}
-
-.form__message--success {
-  color: var(--green);
-}
 
 
 button {

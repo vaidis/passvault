@@ -4,6 +4,7 @@ import { useAuth } from "../AuthContext";
 import { Clock } from "./Clock";
 import { Profile } from "./Profile";
 import Status from "./Status";
+import Ping from "./Ping";
 import './Header.scss'
 
 export const Header: React.FC = () => {
@@ -11,7 +12,8 @@ export const Header: React.FC = () => {
   return (
     <div className="header">
       <h1>PV</h1>
-      <Status />
+      {/* <Status /> */}
+      {/* <Ping /> */}
       {isAuthenticated && (
         <>
           <nav className="navigation">
@@ -23,7 +25,7 @@ export const Header: React.FC = () => {
             </Link>
             <Link to="/auth/logout">Logout</Link>
           </nav>
-          <Clock />
+          {/* <Clock /> */}
         </>
       )}
     </div>

@@ -96,9 +96,6 @@ const Data: React.FC = () => {
         /* Add new password button */
       }
       <header className={'header'}>
-        <div className={'header__brand'}>
-          <div className={'header__title'}>PassVault</div>
-        </div>
         <div className={'header__menu'}>
           <div className={'header__add'} onClick={() => addHandler()}>
             Add new item

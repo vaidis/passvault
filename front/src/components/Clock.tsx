@@ -17,10 +17,6 @@ export const Clock: React.FC = () => {
 
   return (
     <div className="clock">
-      <div>Time Start_____: {String(timeStart)}</div>
-      <div>Time End_______: {String(timeEnd)}</div>
-      <div>isAuthenticated: {JSON.stringify(isAuthenticated)}</div>
-      <div>user.username__: {user?.username}</div>
       <button onClick={() => refresh()}>
         {formatMsToMMSS(timeRemain)}
       </button>

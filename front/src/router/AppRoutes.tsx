@@ -11,13 +11,13 @@ import User from '../pages/User';
 
 const Protected: React.FC<{ children: React.ReactElement }> = ({ children }) => {
   const { isAuthenticated } = useAuth();
-  console.log('AppRoutes.tsx > Protected > isAuthenticated:', isAuthenticated);
+  // console.log('AppRoutes.tsx > Protected > isAuthenticated:', isAuthenticated);
   return isAuthenticated ? children : <Navigate to="/auth/login" replace />;
 };
 
 const PublicOnly: React.FC<{ children: React.ReactElement }> = ({ children }) => {
   const { isAuthenticated } = useAuth();
-  console.log('AppRoutes.tsx > PublicOnly > isAuthenticated:', isAuthenticated);
+  // console.log('AppRoutes.tsx > PublicOnly > isAuthenticated:', isAuthenticated);
   return isAuthenticated ? <Navigate to="/auth/login" replace /> : children;
 };
 

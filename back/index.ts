@@ -8,11 +8,13 @@ import { rateLimit } from 'express-rate-limit'
 import { authRouter } from './routes/authRoutes';
 import { dataRouter } from './routes/dataRoutes';
 import { userRouter } from './routes/userRoutes';
+import { pingRouter } from './routes/pingRoutes';
 import { statsRouter } from './routes/statsRoutes';
+
+import { getClientIp } from './utils/getClientIp';
 
 const PORT = 3001;
 
-// limit 100 requests per 15 min
 const limiter = rateLimit({
   windowMs: 115 * 60 * 1000,
   limit: 2100,
@@ -21,6 +23,7 @@ const limiter = rateLimit({
 })
 
 const app = express();
+// app.set('trust proxy', true);
 
 // Middlewares
 app.use(cors({
@@ -32,10 +35,47 @@ app.use(helmet());
 app.use(cookieParser());
 app.use(bodyParser.json());
 
+app.use(async (req, _res, next) => {
+  try {
+    if (req.method === 'OPTIONS') return next(); // μη λογαριάζεις preflight
+
+    // const db = await dbPromise;
+    const ip = getClientIp(req);
+    if (ip) {
+      const now = new Date().toISOString();
+      console.log('IP:', now, ip);
+      // const existing = db.data.clients[ip];
+
+      // if (existing) {
+      //   existing.lastSeen = now;
+      //   existing.count += 1;
+      //   if (!existing.ua && req.get?.('user-agent')) {
+      //     existing.ua = req.get('user-agent') || existing.ua;
+      //   }
+      // } else {
+      //   db.data.clients[ip] = {
+      //     ip,
+      //     firstSeen: now,
+      //     lastSeen: now,
+      //     count: 1,
+      //     ua: req.get?.('user-agent') || undefined,
+      //   };
+      // }
+
+      // Απλή εγγραφή. Για υψηλό traffic βάλε batching/debounce.
+      // await db.write();
+    }
+  } catch {
+    // σιωπηλά — δεν μπλοκάρουμε το request
+  }
+  next();
+});
+
 // Routes
 app.use('/auth', authRouter);
 app.use('/data', dataRouter);
 app.use('/user', userRouter);
+app.use('/ping', pingRouter);
 app.use('/stats', statsRouter);
 
 // App

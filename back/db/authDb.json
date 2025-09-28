@@ -1347,6 +1347,62 @@
       "challengeHex": "ccd473c9f9917cf6b2548b5d3ef7e0ad259eff9b1913e7d039a6803e668ed86e",
       "expiresAt": 1758874604202,
       "used": false
+    },
+    {
+      "id": "b4dd3937-5809-4383-b32b-b280fbba6b97",
+      "username": "stevaidis",
+      "challengeHex": "6bc472d78f4083e9ac2b1f8b72c021f61a07c0d33455faa7feea7c781c459928",
+      "expiresAt": 1758889499109,
+      "used": true
+    },
+    {
+      "id": "556b35de-b7cc-4226-94d6-39341f5839c9",
+      "username": "stevaidis",
+      "challengeHex": "69f29bf81581c5a90c9de7a29b18723d60a6399baba7668b2bb1bd7b8a658c7a",
+      "expiresAt": 1758889612117,
+      "used": true
+    },
+    {
+      "id": "87e08c96-16ef-43e3-875f-04df255d8c92",
+      "username": "stevaidis",
+      "challengeHex": "f267da0221814132481a5bf003e7b73b73ccb4158bb3ff7de06e6de07d863d5d",
+      "expiresAt": 1758889920749,
+      "used": true
+    },
+    {
+      "id": "72f79085-fe9d-4148-ab72-45f1f590dca6",
+      "username": "stevaidis",
+      "challengeHex": "1e3f6b401b6935a9c1cc57a2db3363672f74fd10e4a411a0e920fcd6dab67032",
+      "expiresAt": 1758916617714,
+      "used": true
+    },
+    {
+      "id": "cdbc2c0e-094b-468b-9c01-5670b3337323",
+      "username": "stevaidis",
+      "challengeHex": "e461922eff970e8caae7994d465218814f830ddbc003b96ece9f72fca7724d96",
+      "expiresAt": 1758916933526,
+      "used": true
+    },
+    {
+      "id": "3a4d2a19-8124-4e26-9d7f-805ce4b6f234",
+      "username": "stevaidis",
+      "challengeHex": "4cd89bdd9f0914f8ba280f50a1ffc3529139c1cb6ea599c4fc52d4cbee2acc57",
+      "expiresAt": 1759089621554,
+      "used": true
+    },
+    {
+      "id": "8a5a9510-90a9-46f3-a172-f1d6f311cabd",
+      "username": "stevaidis",
+      "challengeHex": "f06575a8b7ac52b5702dc906c814230f8674b73395b1c1d3f4d102badce92205",
+      "expiresAt": 1759089787424,
+      "used": true
+    },
+    {
+      "id": "ec7a9513-13a9-49d0-9fc2-5e7e16f0a782",
+      "username": "stevaidis",
+      "challengeHex": "56a4e87991aded12c6020b54b7416267366096dcd351d62e36e23dc07da4e4c2",
+      "expiresAt": 1759089874739,
+      "used": true
     }
   ]
 }

@@ -46,7 +46,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       const now = Date.now();
       const left = Math.max(0, timeEnd - now);
       setTimeRemain(left);
-      console.log('AuthProvider.tsx > left:', left);
+      // console.log('AuthProvider.tsx > left:', left);
       return left;
     };
     let left = tick();
